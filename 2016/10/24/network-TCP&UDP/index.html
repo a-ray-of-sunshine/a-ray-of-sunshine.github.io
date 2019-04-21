@@ -1,0 +1,290 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>TCP&amp;UDP | Shawshank</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">TCP&amp;UDP</h1><a id="logo" href="/.">Shawshank</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">TCP&amp;UDP</h1><div class="post-meta">Oct 24, 2016</div><div class="post-content"><h2 id="TCP-amp-UDP"><a href="#TCP-amp-UDP" class="headerlink" title="TCP&amp;UDP"></a>TCP&amp;UDP</h2><h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|Version|  IHL  |Type of Service|          Total Length         |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|         Identification        |Flags|      Fragment Offset    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  Time to Live |    Protocol   |         Header Checksum       |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                       Source Address                          |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Destination Address                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Options                    |    Padding    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line"></span><br><span class="line">                 Example Internet Datagram Header</span><br><span class="line">                 </span><br><span class="line"> 0                   1                   2                   3</span><br><span class="line"> 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|          Source Port          |       Destination Port        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                        Sequence Number                        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Acknowledgment Number                      |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|  Data |           |U|A|P|R|S|F|                               |</span><br><span class="line">| Offset| Reserved  |R|C|S|S|Y|I|            Window             |</span><br><span class="line">|       |           |G|K|H|T|N|N|                               |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|           Checksum            |         Urgent Pointer        |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                    Options                    |    Padding    |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">|                             data                              |</span><br><span class="line">+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</span><br><span class="line">				TCP Header Format</span><br></pre></td></tr></table></figure>
+<h2 id="socket-编程"><a href="#socket-编程" class="headerlink" title="socket 编程"></a>socket 编程</h2><h3 id="TCP-建立链接"><a href="#TCP-建立链接" class="headerlink" title="TCP 建立链接"></a>TCP 建立链接</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">source</th>
+<th style="text-align:center">destination</th>
+<th style="text-align:center">protocol</th>
+<th style="text-align:center">length</th>
+<th style="text-align:center">info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">108</td>
+<td style="text-align:center">53226→1234 [SYN] Seq=0 Win=8192 Len=0 MSS=65495 WS=256 SACK_PERM=1</td>
+</tr>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">108</td>
+<td style="text-align:center">1234→53226 [SYN, ACK] Seq=0 Ack=1 Win=8192 Len=0 MSS=65495 WS=256 SACK_PERM=1</td>
+</tr>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">84</td>
+<td style="text-align:center">53226→1234 [ACK] Seq=1 Ack=1 Win=8192 Len=0</td>
+</tr>
+</tbody>
+</table>
+<p>建立TCP接连，其实就是进行上面的三次握手，也就是序号同步。</p>
+<h3 id="关闭-TCP-链接"><a href="#关闭-TCP-链接" class="headerlink" title="关闭 TCP 链接"></a>关闭 TCP 链接</h3><table>
+<thead>
+<tr>
+<th style="text-align:right">source</th>
+<th style="text-align:center">destination</th>
+<th style="text-align:center">protocol</th>
+<th style="text-align:center">length</th>
+<th style="text-align:center">info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">84</td>
+<td style="text-align:center">50514→1234 [FIN, ACK] Seq=3428547810 Ack=490876652 Win=8192 Len=0</td>
+</tr>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">84</td>
+<td style="text-align:center">1234→50514 [ACK] Seq=490876652 Ack=3428547811 Win=7936 Len=0</td>
+</tr>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">84</td>
+<td style="text-align:center">1234→50514 [FIN, ACK] Seq=490876652 Ack=3428547811 Win=7936 Len=0</td>
+</tr>
+<tr>
+<td style="text-align:right">127.0.0.1</td>
+<td style="text-align:center">127.0.0.1</td>
+<td style="text-align:center">TCP</td>
+<td style="text-align:center">84</td>
+<td style="text-align:center">50514→1234 [ACK] Seq=3428547811 Ack=490876653 Win=8192 Len=0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="TCP-链接"><a href="#TCP-链接" class="headerlink" title="TCP 链接"></a>TCP 链接</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">NO.</th>
+<th style="text-align:center">src port</th>
+<th style="text-align:center">dest port</th>
+<th style="text-align:center">Control Bits</th>
+<th style="text-align:center">Seq</th>
+<th style="text-align:center">Ack</th>
+<th style="text-align:center">Len</th>
+<th style="text-align:center">Data</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">[SYN]</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">[SYN, ACK]</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">x+1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">[ACK]</td>
+<td style="text-align:center">x+1</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">[PSH, ACK]</td>
+<td style="text-align:center">x+1</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">abc123</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">[ACK]</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">x+1+6</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">[PSH, ACK]</td>
+<td style="text-align:center">x+1+6</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">ef45</td>
+</tr>
+<tr>
+<td style="text-align:center">6</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">[ACK]</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">x+1+6+4</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">7</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">[FIN, ACK]</td>
+<td style="text-align:center">x+1+6+4</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">8</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">[ACK]</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">x+1+6+4+1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">9</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">[FIN, ACK]</td>
+<td style="text-align:center">y+1</td>
+<td style="text-align:center">x+1+6+4+1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+<tr>
+<td style="text-align:center">10</td>
+<td style="text-align:center">50514</td>
+<td style="text-align:center">1234</td>
+<td style="text-align:center">[ACK]</td>
+<td style="text-align:center">x+1+6+4+1</td>
+<td style="text-align:center">y+1+1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">N/A</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>建立链接</p>
+<p>  [0-2]的过程，就是建立一个链接的过程。</p>
+</li>
+<li><p>传输数据</p>
+<p>  [3-4] 和 [5-6] 是两个传输数据的过程</p>
+</li>
+<li><p>断开链接</p>
+<p>  [7-10]的过程，就是断开链接的过程</p>
+</li>
+</ul>
+<p>在传输数据的过程中，如果出现PSH标志，则表示应该立即将数据从TCP的缓存传输到数据接收方的用户空间中，这使得 <code>recv</code> 函数可以返回。</p>
+<p>当传输的数据大于 tcp 分包的大小，则数据将会分成几个不同的包来传输，直到最后一个数据包传输时会，设置 PSH 标志位。此时 Client 的 TCP 就可以将前面缓存的数据组成一个数据包，给用户空间使用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>TCP基于连接的意思是：对于实现TCP通信功能来说，操作系统（内核）会维护那些已经通过三次握手所建立起来的连接。维护连接，说白了就是维护状态，以及分配工作缓存等，状态信息，例如：TCP连接通信时的 SEQ 序号，TCP通信的两端应该都会维护，同时为这个连接，提供一个缓存区，用来存储接受到的数据等。</p>
+<p>所以只要不关闭一个TCP连接，则两端可以随时发起通信，就好似，有一个连接的数据通道一样，所以称为连接。</p>
+<h2 id="网络通信中数据的正确性和完整性"><a href="#网络通信中数据的正确性和完整性" class="headerlink" title="网络通信中数据的正确性和完整性"></a>网络通信中数据的正确性和完整性</h2><h3 id="正确性"><a href="#正确性" class="headerlink" title="正确性"></a>正确性</h3><p>对数据包添加 CRC Checksum 来保证数据的正确性。 </p>
+<h3 id="完整性"><a href="#完整性" class="headerlink" title="完整性"></a>完整性</h3><p>TCP 如何确保数据的完整性，丢包时如何处理。</p>
+<h2 id="TCP-连接中可能会出现的异常"><a href="#TCP-连接中可能会出现的异常" class="headerlink" title="TCP 连接中可能会出现的异常"></a>TCP 连接中可能会出现的异常</h2><ul>
+<li><p>连接被重置</p>
+<p>  当客户端进行被直接kill掉时，客户端所在的操作系统会给服务器端发生一个含有 [RST] 标志位的 tcp 包，用来通知服务器端，客户端的 tcp 连接被异常关闭了。</p>
+</li>
+<li><p>TCP传输延时</p>
+<p>  <a href="http://jerrypeng.me/2013/08/mythical-40ms-delay-and-tcp-nodelay/" target="_blank" rel="noopener">40毫秒延迟与 TCP_NODELAY</a></p>
+</li>
+<li><p>rfc1122 &amp; rfc1123</p>
+<p>  rfc1122 和 rfc1123 这两个rfc对已经存在的tcp等规范进行了进一步的说明和讨论。其中就是关于 PSH 和 ACK 标志的作用及使用的讨论。</p>
+</li>
+</ul>
+<h2 id="socket-的生命周期"><a href="#socket-的生命周期" class="headerlink" title="socket 的生命周期"></a>socket 的生命周期</h2><pre><code>TCP/IP Socket in java中的第 6.4 节 TCP Socket Life Cycle 讲述了关闭socket的生命周期。
+</code></pre><h2 id="网络编程的另一套接口"><a href="#网络编程的另一套接口" class="headerlink" title="网络编程的另一套接口"></a>网络编程的另一套接口</h2><p>其实对于 socket 来说，它和 TCP/IP 网络并没有直接的关系，socket 只是一层用户空间的抽象，用来进行进程间通信。而进程间通信的接口，其实并不只是Socket这一种抽象，还有一个 <a href="https://en.wikipedia.org/wiki/X/Open_Transport_Interface" target="_blank" rel="noopener">X/Open Transport Interface</a> 这个接口，也是对通过网络进行进程间的通信做了抽象。使用这个 XTI/TLI 接口，也可以进行网络编程。</p>
+<p>如何使用 XTI/TLI 进行编程，参考：<a href="https://docs.oracle.com/cd/E53394_01/html/E54815/tli-33281.html" target="_blank" rel="noopener">Programming With XTI and TLI</a></p>
+<p><a href="http://www.openss7.org/xti_man.html" target="_blank" rel="noopener">X/Open Transport Interface (XTI)</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Berkeley_sockets" target="_blank" rel="noopener">Berkeley sockets</a> 这个页面中有如下的描述：</p>
+<blockquote>
+<p>The STREAMS-based Transport Layer Interface (TLI) API offers an alternative to the socket API. However, recent systems that provide the TLI API also provide the Berkeley socket API.</p>
+</blockquote>
+<h2 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">0      7 8     15 16    23 24    31</span><br><span class="line">          +--------+--------+--------+--------+</span><br><span class="line">          |     Source      |   Destination   |</span><br><span class="line">          |      Port       |      Port       |</span><br><span class="line">          +--------+--------+--------+--------+</span><br><span class="line">          |                 |                 |</span><br><span class="line">          |     Length      |    Checksum     |</span><br><span class="line">          +--------+--------+--------+--------+</span><br><span class="line">          |</span><br><span class="line">          |          data octets ...</span><br><span class="line">          +---------------- ...</span><br><span class="line">               User Datagram Header Format</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Source Port</p>
+<p>  数据包源端口，是可选字段，如果这个字段未被使用，则插入0代替。如果这个字段被使用，通常，其意义是发送Socket的端口。</p>
+</li>
+<li><p>Destination Port</p>
+<p>  通信的目标端口。</p>
+</li>
+<li><p>Length</p>
+<p>  表示 UDP 头部和发送的数据（data）的总长度（以字节为单位）</p>
+</li>
+<li><p>Checksum</p>
+<p>  the IP header, the UDP header, and the data 三个数据的检验和。</p>
+</li>
+</ul>
+<h3 id="UDP的关闭"><a href="#UDP的关闭" class="headerlink" title="UDP的关闭"></a>UDP的关闭</h3><p>UDP 本身就是无连接的，所以通信双方，如果有一方断开Socket，另一方并不会得到通知。所以通信双方的 Socket 关闭应该由，实现通信的应用来协商关闭，而不是由Socket来实现关闭。例如关闭 DatagramSocket 的一方，可以在关闭之前显示发送一个 DatagramPacket，这个　Package　中包含一个双方约定好的控制标志位。通信双方只要检测到这个标志位，就可以安全的释放　Socket　资源了。</p>
+<p>同样地，由于 UDP 是无连接的，也就是无状态的通信，所以对于通信双方，即使断开，另一方的 receive 或 send 方法的调用也不会出现异常。</p>
+<h3 id="UDP的数据传输"><a href="#UDP的数据传输" class="headerlink" title="UDP的数据传输"></a>UDP的数据传输</h3><p>UDP直接发送数据包，没有建立连接的过程（三次握手），也没有接收到数据的一方也没有确认数据的过程（发送ACK包），因为没有建立连接的过程，自然也没有断开的过程（四次挥手）。</p>
+<p>DatagramSocket 的 send 方法直接封装数据到一个IP数据包。</p>
+<p>如果发送端首先向接受端发送数据，而接收端没有还没有监听那个端口，则 TCP/IP 协议栈会将接收到的数据进行缓存，接收端启动监听，调用 receive 方法就可以接收到之前发送过来的数据。缓存的时间应该是由TCP/IP协议栈的实现决定的。</p>
+<h3 id="UDP的应用场景"><a href="#UDP的应用场景" class="headerlink" title="UDP的应用场景"></a>UDP的应用场景</h3><h2 id="数据链路层"><a href="#数据链路层" class="headerlink" title="数据链路层"></a>数据链路层</h2><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://tools.ietf.org/html/rfc793" target="_blank" rel="noopener">rfc793-tcp</a></li>
+<li><a href="https://tools.ietf.org/html/rfc768" target="_blank" rel="noopener">rfc768-udp</a></li>
+<li><a href="https://tools.ietf.org/html/rfc791" target="_blank" rel="noopener">rfc791-ip</a></li>
+<li><a href="https://tools.ietf.org/html/rfc2616" target="_blank" rel="noopener">rfc2616-http</a></li>
+<li><a href="https://tools.ietf.org/html/rfc894" target="_blank" rel="noopener">rfc894-IP Datagrams over Ethernet Networks</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Ethernet_frame" target="_blank" rel="noopener">Ethernet_frame</a></li>
+<li><a href="https://en.wikipedia.org/wiki/EtherType" target="_blank" rel="noopener">EtherType</a></li>
+<li><a href="http://www.jellythink.com/archives/705" target="_blank" rel="noopener">简析TCP的三次握手与四次分手</a></li>
+<li><a href="http://blog.csdn.net/chexlong/article/details/6123087" target="_blank" rel="noopener">TCP协议可靠性数据传输实现原理分析</a></li>
+<li><a href="http://www.cnblogs.com/wzyxidian/p/5896456.html" target="_blank" rel="noopener">TCP 协议如何保证可靠传输</a></li>
+<li><a href="http://coolshell.cn/articles/11564.html" target="_blank" rel="noopener">TCP 的那些事儿（上）</a></li>
+<li><a href="http://coolshell.cn/articles/11609.html" target="_blank" rel="noopener">TCP 的那些事儿（下）</a></li>
+<li><a href="http://www.cnblogs.com/zwq194/archive/2012/12/14/2817673.html" target="_blank" rel="noopener">Windows Socket 最大连接数</a></li>
+<li><a href="http://wanshi.iteye.com/blog/1256282" target="_blank" rel="noopener">单机最大tcp连接数</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Maximum_transmission_unit" target="_blank" rel="noopener">Maximum transmission unit</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Maximum_segment_size" target="_blank" rel="noopener">Maximum segment size</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="_blank" rel="noopener">Transmission Control Protocol</a></li>
+<li><a href="http://blog.csdn.net/yusiguyuan/article/details/20479369" target="_blank" rel="noopener">TCP分包 粘包 MTU 和MSS之间的关系分析</a></li>
+<li><a href="http://www.tcpipguide.com/free/t_TCPImmediateDataTransferPushFunction-2.htm" target="_blank" rel="noopener">TCP Immediate Data Transfer: “Push” Function</a></li>
+<li><a href="https://msdn.microsoft.com/en-us/library/aa454066.aspx" target="_blank" rel="noopener">Push Bit Interpretation</a></li>
+<li><a href="https://github.com/fzyz999/Analysis_TCP_in_Linux" target="_blank" rel="noopener">Linux 4.4.0内核源码分析——TCP实现</a></li>
+<li><a href="https://github.com/run/kernel-tcp" target="_blank" rel="noopener">linux内核网络协议栈源码(版本为2.6.35)分析注释</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Nagle%27s_algorithm" target="_blank" rel="noopener">Nagle’s algorithm</a></li>
+<li><a href="https://en.wikipedia.org/wiki/TCP_delayed_acknowledgment" target="_blank" rel="noopener">TCP delayed acknowledgment</a></li>
+<li><a href="https://tools.ietf.org/html/rfc1122" target="_blank" rel="noopener">rfc1122-Requirements for Internet Hosts</a></li>
+<li><a href="http://linuxgp.blog.51cto.com/1708668/1302512" target="_blank" rel="noopener">深入浅出TCP之listen</a></li>
+<li><a href="http://wiki.jikexueyuan.com/project/java-socket/socket-tcp-bean.html" target="_blank" rel="noopener">深入剖析 Socket——TCP 套接字的生命周期</a></li>
+<li><a href="https://github.com/fmaj7/HoneyBadger/wiki/tcp-udp%E6%95%B0%E6%8D%AE%E5%8C%85%E9%95%BF%E9%99%90%E5%88%B6" target="_blank" rel="noopener">tcp udp数据包长限制</a></li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2016/10/24/network-socket/">socket</a><a class="next" href="/2016/10/20/IO-java.nio.file/">java.nio.file</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interface/" style="font-size: 15px;">interface</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/Collections/" style="font-size: 15px;">Collections</a> <a href="/tags/Collection/" style="font-size: 15px;">Collection</a> <a href="/tags/J-U-C/" style="font-size: 15px;">J.U.C</a> <a href="/tags/lock/" style="font-size: 15px;">lock</a> <a href="/tags/Semaphore/" style="font-size: 15px;">Semaphore</a> <a href="/tags/CyclicBarrier/" style="font-size: 15px;">CyclicBarrier</a> <a href="/tags/CountDownLatch/" style="font-size: 15px;">CountDownLatch</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/LinkedList/" style="font-size: 15px;">LinkedList</a> <a href="/tags/Queue/" style="font-size: 15px;">Queue</a> <a href="/tags/Set/" style="font-size: 15px;">Set</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/collection/" style="font-size: 15px;">collection</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/api/" style="font-size: 15px;">api</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/context/" style="font-size: 15px;">context</a> <a href="/tags/component-scan/" style="font-size: 15px;">component-scan</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/cmder/" style="font-size: 15px;">cmder</a> <a href="/tags/win/" style="font-size: 15px;">win</a> <a href="/tags/效率/" style="font-size: 15px;">效率</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/博客/" style="font-size: 15px;">博客</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/extends/" style="font-size: 15px;">extends</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/svn/" style="font-size: 15px;">svn</a> <a href="/tags/BlockingQueue/" style="font-size: 15px;">BlockingQueue</a> <a href="/tags/LinkedBlockingQueue/" style="font-size: 15px;">LinkedBlockingQueue</a> <a href="/tags/PriorityBlockingQueue/" style="font-size: 15px;">PriorityBlockingQueue</a> <a href="/tags/ConcurrentLinkedQueue/" style="font-size: 15px;">ConcurrentLinkedQueue</a> <a href="/tags/CopyOnWriteArrayList/" style="font-size: 15px;">CopyOnWriteArrayList</a> <a href="/tags/接口/" style="font-size: 15px;">接口</a> <a href="/tags/抽象类/" style="font-size: 15px;">抽象类</a> <a href="/tags/Executor/" style="font-size: 15px;">Executor</a> <a href="/tags/ExecutorService/" style="font-size: 15px;">ExecutorService</a> <a href="/tags/CompletionService/" style="font-size: 15px;">CompletionService</a> <a href="/tags/ThreadPoolExecutor/" style="font-size: 15px;">ThreadPoolExecutor</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/vundle/" style="font-size: 15px;">vundle</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/log/" style="font-size: 15px;">log</a> <a href="/tags/index/" style="font-size: 15px;">index</a> <a href="/tags/concepts/" style="font-size: 15px;">concepts</a> <a href="/tags/Timer/" style="font-size: 15px;">Timer</a> <a href="/tags/TimerTask/" style="font-size: 15px;">TimerTask</a> <a href="/tags/ConcurrentMap/" style="font-size: 15px;">ConcurrentMap</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 15px;">ConcurrentHashMap</a> <a href="/tags/HashMap/" style="font-size: 15px;">HashMap</a> <a href="/tags/ReentrantReadWriteLock/" style="font-size: 15px;">ReentrantReadWriteLock</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/SynchronousQueue/" style="font-size: 15px;">SynchronousQueue</a> <a href="/tags/ScheduledExecutorService/" style="font-size: 15px;">ScheduledExecutorService</a> <a href="/tags/AQS/" style="font-size: 15px;">AQS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/BigData-docker/">Windows 上安装 docker</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-0.路线/">Mysql学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-索引/">Mysql安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/Qunar基础框架-QSchedule/">Qunar基础框架-QSchedule</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/java集合构架中使用到的数据结构和算法/">java集合构架中使用到的数据结构和算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/reids-调试环境搭建/">redis-调试环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/31/OpenStack-安装/">OpenStack-安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/26/JVM-hotspot-GC机制/">JVM-hotspot-GC机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/netty-socketio + socket.io 实现消息推送/">netty-socketio + socket.io 实现消息推送</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/26/mongodb-安装/">mongodb-安装</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/a-ray-of-sunshine" title="github" target="_blank">github</a><ul></ul><a href="http://www.cnblogs.com/a-ray-of-sunshine" title="cnblog" target="_blank">cnblog</a><ul></ul><a href="http://blog.csdn.net/a_ray_of_sunshine" title="csdn" target="_blank">csdn</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Shawshank.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

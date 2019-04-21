@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>学习方法论 | Shawshank</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">学习方法论</h1><a id="logo" href="/.">Shawshank</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">学习方法论</h1><div class="post-meta">May 26, 2017</div><div class="post-content"><h2 id="framework"><a href="#framework" class="headerlink" title="framework"></a>framework</h2><h3 id="了解背景"><a href="#了解背景" class="headerlink" title="了解背景"></a>了解背景</h3><ul>
+<li>框架是什么，用来做什么，解决了什么问题</li>
+<li>为什么出现这个框架，框架的背景，框架的作者，作者的博客</li>
+<li>框架的发展历史，版本发布时间，目前的发展情况，从这些信息可以了解到这个框架的目前的活跃程度，这些信息可以从 wiki 上获取 <a href="https://cwiki.apache.org/confluence/spacedirectory/view.action" target="_blank" rel="noopener">apache wiki</a></li>
+<li>有哪些解决了相似问题的框架，这些框架的比较</li>
+<li>从 cwiki 上可以获取到框架的一些设计理念</li>
+</ul>
+<h3 id="分析源码"><a href="#分析源码" class="headerlink" title="分析源码"></a>分析源码</h3><p>从框架的使用入手，找到框架的入口类，例如对于调度执行框架来说，kafka, storm 等等，可以从其启动的脚本文件入手。</p>
+<ul>
+<li>从入口类出发梳理整个框架启动之后，会启动哪些线程</li>
+<li>这些线程构成了哪些子系统</li>
+<li>各种子系统的功能是什么，子系统包含哪些线程，各个线程之间如何协作，画出子系统运行图</li>
+<li>子系统之间如何进行交互，子系统之前通过消息队列，还是其它接口通信。</li>
+<li>整个框架如何向外发布服务，创建一个 Socket 的某个 port 上监听。</li>
+<li>提供了哪些服务，可以响应哪些请求</li>
+<li>外部有哪些 Client，这些 Client是如何使用框架提供的服务的，使用的流程是什么。例如 Consumer 使用 kafka 的流程是什么。</li>
+</ul>
+<p>最终源码分析的结果就是可以推导出一幅系统内部运行状态图，同时框架如何与外部依赖交互（例如 kafak 如何使用 zookeeper, storm 如何使用 zookeeper）</p>
+<p>如果子系统比较复杂，可以将子系统单独画出内部运行图。然后全局的系统运行图中的子系统不用那么细致的描述。</p>
+<h3 id="学习宏观架构"><a href="#学习宏观架构" class="headerlink" title="学习宏观架构"></a>学习宏观架构</h3><ul>
+<li>架构整体是否使用了什么设计模式，例如 Kafka 使用了 Broker 模式。结合具体的设计模式，可以帮助理解架构，反之，通过学习框架也可以了解到模式在实际场景下是如何被使用的。</li>
+<li>框架解决的问题域，如何进行模型提取的，是如何抽象到具体的类层次设计的。</li>
+<li>关注设计模式的使用，框架中为了可扩展性，以及给用户（使用框架的人）留有可以自定义的地方，框架会使用一些设计模式来封装扩展点。例如最为常用的工厂方法。同时也可以反推，如果某个模块使用了工厂方法，说明这个模块是一个整个框架实现 的一个扩展点。例如 Thrift 框架中，</li>
+<li>总结框架的优缺点，找相关的解决同类的问题的框架作比较，总结框架的适用领域。</li>
+</ul>
+<h3 id="框架的应用"><a href="#框架的应用" class="headerlink" title="框架的应用"></a>框架的应用</h3><p>框架往往是解决特定的问题域，有一些常用的经验，例如。storm 流式处理框架，时间窗口的问题就是一个框架相关的应用经验，可以说只要是使用到了 storm ，伴随而来的就是时间窗口的问题。所以学习框架到最后就是落实到应用上，掌握框架的</p>
+<h2 id="library"><a href="#library" class="headerlink" title="library"></a>library</h2><p>学习 library 和 framework 有不同的方法。 类库中往往有一个核心的入口类，其它的功能，都是由这个类生发而来。好的设计往往是简洁，明了和易于学习掌握的。所有通常入口也会统一。例如 HDFS 的 java client 其核心类是 <code>org.apache.hadoop.fs.FileSystem</code> 通过这个类，基本就可以完成对 HDFS 的操作。</p>
+<p>所以类库的使用，要根据其所提供的核心功能，找到功能接口类，从这个入口类，就可以使用这个类库的功能了。</p>
+<h2 id="对比和选取"><a href="#对比和选取" class="headerlink" title="对比和选取"></a>对比和选取</h2><p>在 Java 开发中，往往会大量完成同样功能的框架或者类库，如何选取呢。结合以下指标：</p>
+<ol>
+<li>框架或者类库能够完成的功能的优点和缺点</li>
+<li>框架的学习掌握难度</li>
+<li>目前开发人员对哪个框架比较熟悉</li>
+</ol>
+<h2 id="搭建一个通用的-WEB-框架"><a href="#搭建一个通用的-WEB-框架" class="headerlink" title="搭建一个通用的 WEB 框架"></a>搭建一个通用的 WEB 框架</h2><p>基于 spring 搭建一个通常的 WEB 框架 和 web server 框架。</p>
+<h2 id="web-设计"><a href="#web-设计" class="headerlink" title="web 设计"></a>web 设计</h2><p><a href="http://hao.zuimeiui.com" target="_blank" rel="noopener">最美UI</a></p>
+<p>使用前端 MVC 框架，进行前后端分离。</p>
+<h2 id="java-语言"><a href="#java-语言" class="headerlink" title="java 语言"></a>java 语言</h2><h3 id="Java-跨平台的意义"><a href="#Java-跨平台的意义" class="headerlink" title="Java 跨平台的意义"></a>Java 跨平台的意义</h3><p>Java 语言跨平台，就是因为 JVM 在不同平台上有其不同的实现，JVM的意义在于使用各个操作系统通用的语言（c&amp;c++）, 实现 JVM 规范，当然不同系统之间的语言虽然通用，但是其抽象逻辑却不相同，例如在 linux 系统下，操作文件系统，其核心抽象是 文件描述符（FD），而在 windows 平台下却是 句柄（handle）, 同样地，系统级接口，例如操作磁盘文件，操作网络的接口，虽然都是使用 C 语言描述，但是API却各不相同。有一些系统级接口，虽然是有规范存在，使用 网络 Socket 接口，使用通用规范提供的 API 确实可以实现代码跨平台使用，但是在有些平台上，这些通用接口可能只是兼容性实现，其效率并没有其平台自带的 API 实现的高，所以虽然 c&amp;c++ 是平台独立的语言，但是涉及到具体平台相关的操作，则使用的库就是不一样的，并且在不同平台上其编译的结果也是不同的。</p>
+<p>所以就有必要在不同平台上使用c/c++实现一套相同的规范。在这套规范中定义通用的指令集（JVM指令集）。定义通用的编译后的文件格式（class文件）。定义运行时模式（基于栈的运行模式），等等，这些通用规范的定义，使得所有的机器（不同平台，不同架构）只要实现了相同的规范。则其编译后的代码(class文件)就可以跨平台运行。</p>
+<p>JVM的意义在于抽象了不同的运行时环境（不同操作系统平台，不同硬件架构），提供了一个一致对外的运行环境。</p>
+<p>只要是符合规范的 Class 文件就可以在 JVM 上运行。从而也就为基于 JVM 上实现的各个编程语言，提供了一个可以跨平台的运行时环境。</p>
+<p>更进一步讲，一个通用平台的出现，使得大量的 library 可以被复用，例如我们可以使用各个语言来实现各种非常好用的数据结构例如List，Map等，还有很多算法，例如各种排序。但是由于不同语言实现，可能在不同平台上无法共享使用。而一旦使用基于 JVM 的语言实现，最终编译成的 class 文件，是通用的。这样一个优秀的数据结构，算法的实现，就可以在整个 JVM 的环境中使用。这个一件非常有意义的事。</p>
+<p>常用的数据结构，算法，各个队列等等，都通过 相同的 JVM 语言来描述。这样就不会造成浪费不用在各个平台上各自实现，而是有一个通用的良好实现。这样编程的基础构件就会越来越多，越来完善。越来方便。最终构成一个基础构件库。</p>
+<p>这时候再考虑，当我们启动了一个 JVM 的时候，我们启动了什么。当我们启动一个 JVM，相当于我们拥有了一台可以执行代码的机器，并且这台机器支持多线程，文件，网络等等。我们可以使用 JDK 及各种 library 来使用这台机器，完成特定的功能。这时候当写代码的时候，就考虑你不仅仅是在写代码，而是使用语言来让这个通用机器完成特定的任务。例如使用 JDK 的文件IO API。可以创建，编辑，读写文件。而这种操作是针对 JVM 的，而不是具体的某个平台。</p>
+<p>java 语言和其整个生态系统发展到今天，我觉得 java 语言的跨平台已经不在是 java 语言的一个特点了，跨不跨平台已经不重要，重要的是在这个稳定的，一致的JVM运行时环境下，产生的大量可用的代码，各种库，各种框架。这些库和框架可以被快速应用到各种生产应用环境中，解决实际的问题。并且使用 java 语言进行一致的描述。各种各样的 idea,以代码的形式，保留了下来。便于方便的学习，这个才是最宝贵的。</p>
+<h2 id="进阶学习"><a href="#进阶学习" class="headerlink" title="进阶学习"></a>进阶学习</h2><p>代码的运行并不是孤立的，它是运行在特定环境中的，对于 java 代码来说，运行在 JVM。所以首先<br>应该了解 JVM 的基本原理。</p>
+<p>其次，JVM 本质也是一个应用的程序。它自身也是运行在特定环境中的。这个环境就是操作系统。</p>
+<p>作为一个的程序，有输入，输出，才能够被外界所使用。所以代码中必然会涉及到和外部环境交互的问题。</p>
+<p>例如一个 WEB 程序，其作用是用户通过浏览器输入信息，信息通过网络返回到程序内部。程序读取数据库<br>做相应的计算。然后再返回。整个过程就涉及到多个资源。</p>
+<ul>
+<li>内存 – 缓存</li>
+<li>网络 – 网络并发</li>
+<li>磁盘 – 磁盘并发，性能评价指标</li>
+<li>CPU 多线程 多核CPU – 如何在代码中利用多核心，多处理器的 CPU</li>
+<li>操作系统  – 线程模型，同步机制等等。文件读写。</li>
+</ul>
+<p>在写一个高效的应用的时候，需要考虑的问题就是，这些资源中，哪些可能会造成性能瓶颈。</p>
+<p>只有对这些资源都有一定认识，才可能在写代码的时候，注意到如何高效的使用这些资源。</p>
+<p>例如，对于数据库。如果有大量并发写入。如果对 mysql(数据库) 的存储引擎，有足够的了解。<br>如何评价的性能。那么在写代码的时候，自然就知道如何处理，并发写入的问题。</p>
+<p>其实，如何用，如何能变通的去应用，其关键点在于，要了解它的特性。</p>
+<p>例如：如果对 mysql 有深入的了解，就可以有多种方法处理大表的问题。</p>
+<p>总之，就是，程序的性能问题依赖于外部环境。而程序员对外部环境了解多少，那么他对程序的<br>掌控能力就有多少。</p>
+<p>如果没有存储相关的软件，我们需要掌握，如何评价它。例如：性能，并发，适用的存储对象。</p>
+<p>书籍：</p>
+<p>大话存储</p>
+<p>深入理解并行编程</p>
+<p>多处理器编程的艺术</p>
+<p>MySQL技术内幕：InnoDB存储引擎(第2版)</p>
+<p><a href="https://www.douban.com/doulist/3385709/" target="_blank" rel="noopener">多线程并发</a></p>
+<p>网络编程的学习路径：基本的 JAVA Socket 接口。基于 Socket 接口的上层 封装 API。例如 netty, mina 等。<br>在向上走，就是 web 服务器，是如何实现的，如何处理并发请求。并发请求的处理模型。可以学习 tomcat 源码。<br>可以学习 Tomcat Connector architecture 。</p>
+<h3 id="企业级应用的特点"><a href="#企业级应用的特点" class="headerlink" title="企业级应用的特点"></a>企业级应用的特点</h3><h4 id="登录验证体系"><a href="#登录验证体系" class="headerlink" title="登录验证体系"></a>登录验证体系</h4><p>使用系统的人，不但有客户，还会有系统的运维人员。同时系统的运营人员，可以登录客户的账号进行一些特权操作。</p>
+<p>这就要求 account, cusomter 进行分离抽象。</p>
+<h4 id="消息系统。"><a href="#消息系统。" class="headerlink" title="消息系统。"></a>消息系统。</h4><p>操作日志的记录，帮助企业级客户，进行问题追述。</p>
+<p>操作日志又不应该核心业务。所以操作日志的记录应该是异步完成的。</p>
+<p>需要有一个消息系统。处理完核心业务之后，发送一条消息。进行日志记录。</p>
+<h4 id="外部系统的隔离"><a href="#外部系统的隔离" class="headerlink" title="外部系统的隔离"></a>外部系统的隔离</h4><p>对于一些外部服务。例如：公司内部提供了一套消息队列API，我们在系统内部使用的时候，最好先进行一次封装。</p>
+<p>例如：如果公司API升级，参数发生变化，甚至服务不可用。此时就需要对我们的当前系统进行改造。</p>
+<p>如果没有进行封装处理，可能 API 升级时，需要做大量工作来完成，我们的项目改造。</p>
+<h4 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h4><p>企业级应用的审核是非常常见的一种操作。审核就涉及到工作流。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a href="http://www.jianshu.com/p/1850db5d2891" target="_blank" rel="noopener">如何读懂代码</a></li>
+<li><a href="http://www.cnblogs.com/kongzheng/articles/1370165.html" target="_blank" rel="noopener">如何进行软件架构设计</a></li>
+<li><a href="http://blog.csdn.net/ago52030/article/details/5445970" target="_blank" rel="noopener">IT人的学习方法论</a></li>
+<li><a href="http://www.uisdc.com/" target="_blank" rel="noopener">优设网</a></li>
+<li><a href="http://docs.oracle.com/javase/specs/jvms/se8/html/index.html" target="_blank" rel="noopener">The Java® Virtual Machine Specification</a></li>
+<li><a href="https://www.zhihu.com/question/25002833" target="_blank" rel="noopener">程序员写简历</a></li>
+</ol>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2017/06/01/BigData-kafka-Consumer实现/">BigData-kafka-Consumer实现</a><a class="next" href="/2017/05/21/BigData-storm-任务分配及调度/">BigData-storm-任务分配及调度</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interface/" style="font-size: 15px;">interface</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/Collections/" style="font-size: 15px;">Collections</a> <a href="/tags/Collection/" style="font-size: 15px;">Collection</a> <a href="/tags/J-U-C/" style="font-size: 15px;">J.U.C</a> <a href="/tags/lock/" style="font-size: 15px;">lock</a> <a href="/tags/Semaphore/" style="font-size: 15px;">Semaphore</a> <a href="/tags/CyclicBarrier/" style="font-size: 15px;">CyclicBarrier</a> <a href="/tags/CountDownLatch/" style="font-size: 15px;">CountDownLatch</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/LinkedList/" style="font-size: 15px;">LinkedList</a> <a href="/tags/Queue/" style="font-size: 15px;">Queue</a> <a href="/tags/Set/" style="font-size: 15px;">Set</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/collection/" style="font-size: 15px;">collection</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/api/" style="font-size: 15px;">api</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/context/" style="font-size: 15px;">context</a> <a href="/tags/component-scan/" style="font-size: 15px;">component-scan</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/cmder/" style="font-size: 15px;">cmder</a> <a href="/tags/win/" style="font-size: 15px;">win</a> <a href="/tags/效率/" style="font-size: 15px;">效率</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/博客/" style="font-size: 15px;">博客</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/extends/" style="font-size: 15px;">extends</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/svn/" style="font-size: 15px;">svn</a> <a href="/tags/BlockingQueue/" style="font-size: 15px;">BlockingQueue</a> <a href="/tags/LinkedBlockingQueue/" style="font-size: 15px;">LinkedBlockingQueue</a> <a href="/tags/PriorityBlockingQueue/" style="font-size: 15px;">PriorityBlockingQueue</a> <a href="/tags/ConcurrentLinkedQueue/" style="font-size: 15px;">ConcurrentLinkedQueue</a> <a href="/tags/CopyOnWriteArrayList/" style="font-size: 15px;">CopyOnWriteArrayList</a> <a href="/tags/接口/" style="font-size: 15px;">接口</a> <a href="/tags/抽象类/" style="font-size: 15px;">抽象类</a> <a href="/tags/Executor/" style="font-size: 15px;">Executor</a> <a href="/tags/ExecutorService/" style="font-size: 15px;">ExecutorService</a> <a href="/tags/CompletionService/" style="font-size: 15px;">CompletionService</a> <a href="/tags/ThreadPoolExecutor/" style="font-size: 15px;">ThreadPoolExecutor</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/vundle/" style="font-size: 15px;">vundle</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/log/" style="font-size: 15px;">log</a> <a href="/tags/index/" style="font-size: 15px;">index</a> <a href="/tags/concepts/" style="font-size: 15px;">concepts</a> <a href="/tags/Timer/" style="font-size: 15px;">Timer</a> <a href="/tags/TimerTask/" style="font-size: 15px;">TimerTask</a> <a href="/tags/ConcurrentMap/" style="font-size: 15px;">ConcurrentMap</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 15px;">ConcurrentHashMap</a> <a href="/tags/HashMap/" style="font-size: 15px;">HashMap</a> <a href="/tags/ReentrantReadWriteLock/" style="font-size: 15px;">ReentrantReadWriteLock</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/SynchronousQueue/" style="font-size: 15px;">SynchronousQueue</a> <a href="/tags/ScheduledExecutorService/" style="font-size: 15px;">ScheduledExecutorService</a> <a href="/tags/AQS/" style="font-size: 15px;">AQS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/BigData-docker/">Windows 上安装 docker</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-0.路线/">Mysql学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-索引/">Mysql安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/Qunar基础框架-QSchedule/">Qunar基础框架-QSchedule</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/java集合构架中使用到的数据结构和算法/">java集合构架中使用到的数据结构和算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/reids-调试环境搭建/">redis-调试环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/31/OpenStack-安装/">OpenStack-安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/26/JVM-hotspot-GC机制/">JVM-hotspot-GC机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/netty-socketio + socket.io 实现消息推送/">netty-socketio + socket.io 实现消息推送</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/26/mongodb-安装/">mongodb-安装</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/a-ray-of-sunshine" title="github" target="_blank">github</a><ul></ul><a href="http://www.cnblogs.com/a-ray-of-sunshine" title="cnblog" target="_blank">cnblog</a><ul></ul><a href="http://blog.csdn.net/a_ray_of_sunshine" title="csdn" target="_blank">csdn</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Shawshank.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

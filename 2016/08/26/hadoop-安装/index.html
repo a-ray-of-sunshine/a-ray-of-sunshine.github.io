@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>hadoop-安装 | Shawshank</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">hadoop-安装</h1><a id="logo" href="/.">Shawshank</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">hadoop-安装</h1><div class="post-meta">Aug 26, 2016</div><div class="post-content"><h2 id="hadoop"><a href="#hadoop" class="headerlink" title="hadoop"></a>hadoop</h2><p><a href="http://hadoop.apache.org/" target="_blank" rel="noopener">hadoop</a> 官网</p>
+<p>安装教程：</p>
+<p><a href="http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">Hadoop: Setting up a Single Node Cluster.</a></p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li><p>设置 JAVA_HOME</p>
+<p>  编辑这个文件 etc/hadoop/hadoop-env.sh 将其中的 {JAVA_HOME} 替换成本机安装的 JAVA_HOME 的绝对路径。</p>
+</li>
+<li><p>将 localhost 设置成可以无口令 ssh 登录</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t dsa -P <span class="string">''</span> -f ~/.ssh/id_dsa</span><br><span class="line"> 	$ cat ~/.ssh/id_dsa.pub &gt;&gt; ~/.ssh/authorized_keys</span><br><span class="line"> 	$ chmod 0600 ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清空 logs 目录</p>
+<p>  如果启动 <code>sbin/start-dfs.sh</code> hdfs 报错，可以尝试清空 $HADOOP_HOME/logs</p>
+</li>
+</ul>
+<h2 id="使用-Shell-Commands-管理-hdfs"><a href="#使用-Shell-Commands-管理-hdfs" class="headerlink" title="使用 Shell Commands 管理 hdfs"></a>使用 Shell Commands 管理 hdfs</h2><p>使用上面的步骤，启动 hdfs，然后在访问  <a href="http://namenode-name:50070/" target="_blank" rel="noopener">http://namenode-name:50070/</a> 可以看到 hdfs 的管理界面。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bin/hdfs dfs -<span class="built_in">help</span></span><br><span class="line">bin/hdfs dfs -<span class="built_in">help</span> <span class="built_in">command</span></span><br></pre></td></tr></table></figure>
+<p>The command bin/hdfs dfs -help lists the commands supported by Hadoop shell. Furthermore, the command bin/hdfs dfs -help command-name displays more detailed help for a command. These commands support most of the normal files system operations like copying files, changing file permissions, etc. It also supports a few HDFS specific operations like changing replication of files. For more information see <a href="http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/FileSystemShell.html" target="_blank" rel="noopener">File System Shell Guide</a>.</p>
+<h2 id="启动和关闭-hdfs"><a href="#启动和关闭-hdfs" class="headerlink" title="启动和关闭 hdfs"></a>启动和关闭 hdfs</h2><ol>
+<li><p>安装 hadoop</p>
+<p> 下载地址： <a href="http://mirrors.cnnic.cn/apache/hadoop/common/" target="_blank" rel="noopener">hadoop download</a></p>
+</li>
+<li><p>解压到指定目录</p>
+</li>
+<li><p>修改 etc/hadoop/hadoop-env.sh</p>
+<p> 设置 JAVA_HOME</p>
+</li>
+<li><p>启动 hdfs</p>
+<p> <code>sbin/start-dfs.sh</code></p>
+</li>
+<li><p>访问 web 管理界面</p>
+<p> <a href="http://namenode-name:50070/" target="_blank" rel="noopener">http://namenode-name:50070/</a></p>
+</li>
+<li><p>关闭 hdfs</p>
+<p> <code>sbin/stop-dfs.sh</code></p>
+</li>
+</ol>
+<p>## </p>
+<p><a href="http://acesdream.blog.51cto.com/10029622/1625446" target="_blank" rel="noopener">使用Hadoop提供的API操作HDFS</a></p>
+<p><a href="http://qindongliang.iteye.com/blog/1982039" target="_blank" rel="noopener">如何使用Java API读写HDFS</a></p>
+<h2 id="Hive-读取-protobuf-数据"><a href="#Hive-读取-protobuf-数据" class="headerlink" title="Hive 读取 protobuf 数据"></a>Hive 读取 protobuf 数据</h2><p><a href="https://github.com/twitter/elephant-bird/wiki/How-to-use-Elephant-Bird-with-Hive" target="_blank" rel="noopener">How to use Elephant Bird with Hive</a></p>
+<p><a href="https://github.com/twitter/elephant-bird" target="_blank" rel="noopener">twitter/elephant-bird</a></p>
+<p><a href="http://stackoverflow.com/questions/27791961/use-elephant-bird-with-hive-to-read-protobuf-data" target="_blank" rel="noopener">Use elephant-bird with hive to read protobuf data</a></p>
+<p><a href="https://cwiki.apache.org/confluence/display/Hive/Home" target="_blank" rel="noopener">Apache Hive docs</a></p>
+<p><a href="http://www.niubua.com/2014/11/28/hive%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/" target="_blank" rel="noopener">hive数据类型和文件格式</a></p>
+<p><a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL" target="_blank" rel="noopener">Row Format, Storage Format, and SerDe</a></p>
+<h2 id="搭建-hive-环境"><a href="#搭建-hive-环境" class="headerlink" title="搭建 hive 环境"></a>搭建 hive 环境</h2><p><a href="https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive" target="_blank" rel="noopener">GettingStarted-RunningHive</a></p>
+<ul>
+<li><p>首先安装 hadoop , 设置 HADOOP_HOME 环境变量。</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> HADOOP_HOME=&lt;hadoop-install-dir&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在 hadoop 中初始化 hive 的工作目录</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="variable">$HADOOP_HOME</span>/bin/hadoop fs -mkdir       /tmp</span><br><span class="line"> 	$ <span class="variable">$HADOOP_HOME</span>/bin/hadoop fs -mkdir       /user/hive/warehouse</span><br><span class="line"> 	$ <span class="variable">$HADOOP_HOME</span>/bin/hadoop fs -chmod g+w   /tmp</span><br><span class="line"> 	$ <span class="variable">$HADOOP_HOME</span>/bin/hadoop fs -chmod g+w   /user/hive/warehouse</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置 HIVE_HOME</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">export</span> HIVE_HOME=&lt;hive-install-dir&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>初始化 metadata</p>
+<p>  <a href="https://cwiki.apache.org/confluence/display/Hive/Hive+Schema+Tool" target="_blank" rel="noopener">Hive Schema Tool</a></p>
+<p>  hive 自身需要使用数据库来存储其 metadata 所以在使用之前使用 The Hive Schema Tool 来初始化 hive 的 metadata.</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ schematool -dbType derby -initSchema</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<pre><code>如果需要使用的数据数据库，例如使用 mysql 来存储 metadata 则需要进行额外的配置。
+
+[Hadoop Hive安装，配置mysql元数据库](http://blog.csdn.net/x_i_y_u_e/article/details/46845609)
+</code></pre><h2 id="hadoop-海量日志分析解决方案"><a href="#hadoop-海量日志分析解决方案" class="headerlink" title="hadoop 海量日志分析解决方案"></a>hadoop 海量日志分析解决方案</h2><p><a href="http://www.cnblogs.com/edisonchou/p/4449082.html" target="_blank" rel="noopener">Hadoop学习笔记—20.网站日志分析项目案例（一）项目介绍</a></p>
+<p><a href="http://blog.csdn.net/y521263/article/details/23969745" target="_blank" rel="noopener">hadoop学习–基于Hive的Hadoop日志分析</a></p>
+<h2 id="hadoop-集群环境的搭建"><a href="#hadoop-集群环境的搭建" class="headerlink" title="hadoop 集群环境的搭建"></a>hadoop 集群环境的搭建</h2><h3 id="安装centos"><a href="#安装centos" class="headerlink" title="安装centos"></a>安装centos</h3><p>使用 Oracle virtual Box 安装时 centos7， 时注意，设置好内存大小，默认是 256 或者是 512 太小了，安装过程中界面会卡顿，所以最好将内存设置成 1024.</p>
+<p>注意：在 Oracle virtual Box 将虚拟机的网络连接方法改成，桥接网卡，这样新建的虚拟机就和当前物理机在同一个网络当中了。</p>
+<p>复制虚拟机：点击，控制—复制，即可。复制的虚拟机，由于 mac 地址是一样的所以需要将重新，配置虚拟机的mac地址。设置–网络–高级，MAC 地址。</p>
+<ol>
+<li><p>设置虚拟机后台启动</p>
+</li>
+<li><p>配置 yum 源</p>
+</li>
+</ol>
+<p>参考：<a href="http://mirrors.163.com/.help/centos.html" target="_blank" rel="noopener">网易CentOS镜像使用帮助</a></p>
+<ol start="2">
+<li>安装下载工具 wget</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install wget</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>安装 rz &amp; sz</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install lrzsz</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>安装 jdk</li>
+</ol>
+<p>由于下载时，要选择同意协议，在 wget 上添加下面的参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line"></span><br><span class="line">wget --no-check-certificate --no-cookies --header <span class="string">"Cookie: oraclelicense=accept-securebackup-cookie"</span> http://download.oracle.com/otn-pub/java/jdk/7u79-b15/jdk-7u79-linux-x64.tar.gz</span><br><span class="line"></span><br><span class="line">mkdir /usr/<span class="built_in">local</span>/java</span><br><span class="line">tar xvf jdk-7u79-linux-x64.tar.gz -C /usr/<span class="built_in">local</span>/java</span><br><span class="line">rm jdk-7u79-linux-x64.tar.gz</span><br></pre></td></tr></table></figure>
+<p><a href="http://stackoverflow.com/questions/10268583/downloading-java-jdk-on-linux-via-wget-is-shown-license-page-instead" target="_blank" rel="noopener">Downloading Java JDK on Linux via wget is shown license page instead</a></p>
+<ol start="5">
+<li><p>配置环境变量</p>
+<p> 在 /etc/profile.d 目录下创建一个 java-en.sh 文件<br> 添加以下内容</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># java web env vars.</span></span><br><span class="line">JAVA_HOME=/usr/<span class="built_in">local</span>/java/jdk1.7.0_79</span><br><span class="line">CLASS_PATH=.:<span class="variable">$JAVA_HOME</span>/lib/dt.jar:<span class="variable">$JAVA_HOME</span>/lib/tools.jar</span><br><span class="line"></span><br><span class="line"><span class="built_in">export</span> JAVA_HOME</span><br><span class="line"><span class="built_in">export</span> CLASS_PATH</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>然后，执行 `source java-en.sh`
+
+验证：`java -version` &amp; `javac -version` 可以正常打印出信息，即可。
+</code></pre><h2 id="CDH"><a href="#CDH" class="headerlink" title="CDH"></a>CDH</h2><p>apache hadoop 的一个发行版本。</p>
+<p><a href="http://www.cloudera.com/documentation.html" target="_blank" rel="noopener">documentation</a></p>
+<p><a href="http://www.cloudera.com/documentation/manager/5-1-x.html" target="_blank" rel="noopener">manager document</a></p>
+<p><a href="http://www.cloudera.com/documentation/manager/5-1-x/Cloudera-Manager-Installation-Guide/Cloudera-Manager-Installation-Guide.html" target="_blank" rel="noopener">Cloudera-Manager-Installation-Guide</a></p>
+<p><a href="http://www.cloudera.com/documentation/cdh/5-1-x.html" target="_blank" rel="noopener">cdh document</a></p>
+<p><a href="http://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/CDH5-Installation-Guide.html" target="_blank" rel="noopener">CDH5-Installation-Guide</a></p>
+<p>rpm 包下载地址</p>
+<p><a href="http://archive.cloudera.com/cloudera-manager/redhat/6/x86_64/cloudera-manager/3/RPMS/" target="_blank" rel="noopener">cloudera-manager rpms</a></p>
+<ol>
+<li><p>设置 yum 仓库源</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/cloudera-manager.repo</span><br><span class="line"></span><br><span class="line">cp cloudera-manager.repo /etc/yum.repos.d</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装 jdk</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install oracle-j2sdk1.7</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>安装完成之后，设置 JAVA_HOME, CLASS_PATH
+</code></pre><ol start="3">
+<li><p>安装 cloudera-manager</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install cloudera-manager-daemons cloudera-manager-server</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="4">
+<li><p>设置     cloudera-manager 的数据库</p>
+<ol>
+<li><p>安装数据库(默认是 PostgreSQL )</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install cloudera-manager-server-db-2</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code>2. 启动数据库
+
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 禁用 selinux , 将 SELINUX=disabled</span><br><span class="line">cat /etc/sysconfig/selinux</span><br><span class="line"># 需要重新启动机器,上面的禁用才会生效</span><br><span class="line">shutdown -r now</span><br><span class="line">service cloudera-scm-server-db start</span><br></pre></td></tr></table></figure>
+
+
+3. 初始化数据库
+
+    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/share/cmf/schema/scm_prepare_database.sh</span><br></pre></td></tr></table></figure>
+</code></pre><ol start="5">
+<li><p>启动 cloudera-manager</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service cloudera-scm-server start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>访问 cloudera-manager</p>
+<p> <a href="http://Server" target="_blank" rel="noopener">http://Server</a> host:7180</p>
+<p> Username: admin Password: admin</p>
+</li>
+</ol>
+<p><a href="https://www.centos.org/docs/5/html/5.1/Deployment_Guide/sec-sel-enable-disable.html" target="_blank" rel="noopener">Enable or Disable SELinux</a></p>
+<p><a href="https://www.cloudera.com/documentation/enterprise/latest/topics/cm_failover_db.html" target="_blank" rel="noopener">ScmActive failed to validate CM identity 错误处理办法</a></p>
+<p><a href="http://www.cloudera.com/documentation/manager/5-1-x/Cloudera-Manager-Managing-Clusters/Managing-Clusters-with-Cloudera-Manager.html" target="_blank" rel="noopener">Managing Clusters with Cloudera Manager 使用Cloudera Manager安装管理集群</a></p>
+<p><a href="http://community.cloudera.com/t5/Cloudera-Enterprise-5-Beta/Got-error-when-install-cdh5-via-Manager5-quot-5-68-168-192-in/m-p/4843#U4843" target="_blank" rel="noopener">集群安装失败</a></p>
+<p><a href="http://www.cnblogs.com/jasondan/p/4011153.html" target="_blank" rel="noopener">离线安装Cloudera Manager 5和CDH5(最新版5.1.3) 完全教程</a></p>
+<p><a href="https://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/" target="_blank" rel="noopener">A Quick Guide to Using the MySQL Yum Repository</a></p>
+<p><a href="http://archive-primary.cloudera.com/cm5/cm/5/" target="_blank" rel="noopener">CDH5 Hadoop集群完全离线安装步骤总结</a></p>
+<p><a href="http://www.361way.com/cloudera-manager-cdh-install/5033.html" target="_blank" rel="noopener">Cloudera Manager 5和CDH5离线安装</a></p>
+<p><a href="http://www.cloudera.com/documentation/enterprise/release-notes/topics/rn_consolidated_pcm.html" target="_blank" rel="noopener">CDH 5 and Cloudera Manager 5 Requirements and Supported Versions</a></p>
+<p><a href="http://archive.cloudera.com/cdh5/parcels/" target="_blank" rel="noopener"></a></p>
+<p>在从结点上安装 Java 和 agent</p>
+<p>创建用户</p>
+<p>创建 run/cloudera-scm-agent 文件夹</p>
+<h2 id="centos6-5-安装-cdh5-5"><a href="#centos6-5-安装-cdh5-5" class="headerlink" title="centos6.5 安装 cdh5.5"></a>centos6.5 安装 cdh5.5</h2><h3 id="下载软件包"><a href="#下载软件包" class="headerlink" title="下载软件包"></a>下载软件包</h3><h3 id="配置centos"><a href="#配置centos" class="headerlink" title="配置centos"></a>配置centos</h3><ol>
+<li><p>设置静态ip</p>
+</li>
+<li><p>设置hostname</p>
+<p> centos6.5 配置 /etc/sysconfig/network 中的 HOSTNAME 即可<br> centos7 需要配置 /etc/hostname 文件</p>
+<p> 配置内外网卡</p>
+</li>
+<li><p>创建本地 yum 源。<br>createrepo rpm</p>
+</li>
+</ol>
+<p>将所有使用到的 rpm 都放置到 /usr/local/local-repo/ 中。</p>
+<p>createrepo -v /usr/local/local-repo/</p>
+<p><a href="https://www.rpmfind.net/linux/RPM/opensuse/13.2/x86_64/createrepo-0.10.3-3.1.4.x86_64.html" target="_blank" rel="noopener">https://www.rpmfind.net/linux/RPM/opensuse/13.2/x86_64/createrepo-0.10.3-3.1.4.x86_64.html</a></p>
+<ol>
+<li>创建仓库所在文件夹</li>
+</ol>
+<p>mkdir /usr/local/local-repo/</p>
+<ol start="2">
+<li><p>将所有rpm 拷贝到 上面的文件夹</p>
+</li>
+<li><p>创建仓库</p>
+</li>
+</ol>
+<p>createrepo -v /usr/local/local-repo/</p>
+<p>如果，后续有新的rpm 添加进来，则使用上面的命令，刷新。</p>
+<p>刷新仓库<br>createrepo -v –update /usr/local/local-repo/</p>
+<p>刷新yum缓存<br>yum clean all</p>
+<ol start="4">
+<li>配置 yum 源</li>
+</ol>
+<p>在/etc/yum.repo.d/下创建一个repo文件，文件名可以自定义，但一定要以repo结尾</p>
+<p>例如 local-repo.repo<br>添加如下内容</p>
+<p>[local-repo]                    #仓库名称可以自定义<br>name=This is a local repo    #描述信息<br>baseurl=file:///usr/local/local-repo/ #这里填写仓库的url，注意 有三个正斜线<br>enabled=1                    #是否开启仓库，1为开启，0为关闭<br>gpgcheck=0                #是否检查gpgkey，1为开启，0为关闭</p>
+<ol start="5">
+<li>禁用外部源</li>
+</ol>
+<p>CentOS-Base.repo 备份<br>CentOS-Base.repo 禁用所有需要连接的仓库 enable=0， 默认启用的那几个仓库没有 enable 配置，直接加上即可。</p>
+<ol start="6">
+<li>初始化 yum 缓存</li>
+</ol>
+<p>yum clean all</p>
+<ol start="7">
+<li>验证</li>
+</ol>
+<p>yum list | grep clouder*</p>
+<p>可以看到本地仓库中rpm</p>
+<p>cloudera-manager-agent.x86_64<br>cloudera-manager-daemons.x86_64<br>cloudera-manager-server.x86_64<br>cloudera-manager-server-db-2.x86_64</p>
+<ol start="8">
+<li>安装 cloudera</li>
+</ol>
+<p>./cloudera-manager-installer.bin –skip_repo_package=1</p>
+<p>必须先安装 perl 才可以。<br>(1/6): perl-5.10.1-141.el6_7.1.x86_64.rpm                                |  10 MB     00:05<br>(2/6): perl-Module-Pluggable-3.90-141.el6_7.1.x86_64.rpm                 |  40 kB     00:00<br>(3/6): perl-Pod-Escapes-1.04-141.el6_7.1.x86_64.rpm                      |  33 kB     00:00<br>(4/6): perl-Pod-Simple-3.13-141.el6_7.1.x86_64.rpm                       | 213 kB     00:00<br>(5/6): perl-libs-5.10.1-141.el6_7.1.x86_64.rpm                           | 579 kB     00:00<br>(6/6): perl-version-0.77-141.el6_7.1.x86_64.rpm                          |  52 kB     00:00</p>
+<h3 id="安装-postgresql-数据库"><a href="#安装-postgresql-数据库" class="headerlink" title="安装 postgresql 数据库"></a>安装 postgresql 数据库</h3><p>注意安装顺序：</p>
+<p>rpm -ivh postgresql94-libs-9.4.1-1PGDG.rhel6.i686.rpm</p>
+<p>rpm -ivh postgresql94-9.4.1-1PGDG.rhel6.i686.rpm</p>
+<p>rpm -ivh postgresql94-server-9.4.1-1PGDG.rhel6.i686.rpm</p>
+<p>rpm -ivh postgresql94-contrib-9.4.1-1PGDG.rhel6.i686.rpm</p>
+<p>需要将cloudera所在的主机自身，也添加到 hosts文件中。</p>
+<p>需要关闭 iptables<br>service iptables stop<br>chkconfig iptables off</p>
+<p>将 拷贝到 /opt/cloudera/parcel-repo</p>
+<p>设置本地 CDH 安装源：</p>
+<p><a href="http://www.cloudera.com/documentation/archive/manager/4-x/4-8-5/Cloudera-Manager-Installation-Guide/cmig_create_local_parcel_repo.html" target="_blank" rel="noopener">设置本地 CDH 安装源</a></p>
+<p>注意完成上面的，步骤之后，将拷贝后的文件权限更改成 cloudera-scm用户，</p>
+<p>chown -R cloudera-scm:cloudera-scm ./*</p>
+<p> ERROR ParcelUpdateService:com.cloudera.parcel.components.ParcelDownloaderImpl: Unable to retrieve remote parcel repository manifest</p>
+<p><a href="http://www.cloudera.com/documentation/enterprise/latest/topics/quickstart.html" target="_blank" rel="noopener">cloudera 最新安装文档</a></p>
+<p>本地化安装</p>
+<ol>
+<li><p>yum install yum-plugin-downloadonly</p>
+</li>
+<li><p>yum install –downloadonly –downloaddir=/tmp <package-name></package-name></p>
+</li>
+<li><p>yum localinstall 列出所有的包上面。</p>
+</li>
+</ol>
+<p>需要在cluster上设置，parcel-repo</p>
+<p>/usr/share/cmf/packages/ 位置。</p>
+<p>创建一个临时远程仓库：</p>
+<p><a href="http://www.cloudera.com/documentation/enterprise/latest/topics/cm_ig_create_local_parcel_repo.html" target="_blank" rel="noopener">Creating a Temporary Remote Repository</a></p>
+<p>python -m SimpleHTTPServer 8900</p>
+<p>安装agent的过程中可以使用 tail -f  /var/log/yum.log 来查看</p>
+<h3 id="各个界面功能，介绍"><a href="#各个界面功能，介绍" class="headerlink" title="各个界面功能，介绍"></a>各个界面功能，介绍</h3><ol>
+<li>群集安装</li>
+</ol>
+<p>在 /tmp 目录下有一个scm_prepare_node 开头的文件夹。<br>里面有一个 scm_prepare_node.sh 脚本。这个脚本的就是在群集安装这个界面所执行的。</p>
+<p>整个过程如下：</p>
+<p>take_lock<br>detect_root<br>detect_distro<br>detect_scm_server<br>cloud_specific_configure<br>setup_blacklist<br>install_repo_files<br>install_priority_files<br>refresh_metadata<br>install_remote_packages<br>install_unlimited_jce<br>configure_agent<br>start_agent</p>
+<p>其中：install_repo_files 这个过程会将 一个名称为 cloudera-manager.repo 的文件，安装到 /etc/yum.repos.d 中。创建了一个仓库 cloudera-manager， 其url 就是：选择存储库时，配置的自定义存储库。</p>
+<p>这个界面的功能是安装并启动agent.</p>
+<ol start="2">
+<li>正在安装选定 Parcel </li>
+</ol>
+<p>总共有4个过程</p>
+<ul>
+<li>已下载 — 表示 master 主机的 /opt/cloudera/ 目录中已经有了 CDH的包</li>
+<li>已分配 — master 向各个 cluster-host 发送 Parcel 包，到 /opt/cloudera/parcel-cache 目录中</li>
+<li>已解压 — cluster-host 将parcel-cache目录中的CDH解压到一个临时目录中。</li>
+<li>已激活 — 不知道？？？其作用有可能是向 master 和 自身主机，报告 CDH 已经成功解压了。</li>
+</ul>
+<p>这个过程是安装在 /opt/cloudera/ 中的 parcel.</p>
+<ol start="3">
+<li>检查主机正确性</li>
+</ol>
+<p>可能会遇到下面的问题：</p>
+<ul>
+<li>hadoop-worker1: IOException thrown while collecting data from host: No route to host</li>
+</ul>
+<p>是因为agent机器开启了防火墙<br>service iptables stop 关闭后重新检测。</p>
+<ul>
+<li><p>Cloudera 建议将 /proc/sys/vm/swappiness 设置为 0。当前设置为 60。使用 sysctl 命令在运行时更改该设置并编辑 /etc/sysctl.conf 以在重启后保存该设置。您可以继续进行安装，但可能会遇到问题，Cloudera Manager 报告您的主机由于交换运行状况不佳。以下主机受到影响：</p>
+</li>
+<li><p>已启用“透明大页面”，它可能会导致重大的性能问题。版本为“/sys/kernel/mm/transparent_hugepage”且发行版为“{1}”的 Kernel 已将 enabled 设置为“{2}”，并将 defrag 设置为“{3}”。请运行“echo never &gt; /sys/kernel/mm/redhat_transparent_hugepage/defrag”以禁用此设置，然后将同一命令添加到一个 init 脚本中，如 /etc/rc.local，这样当系统重启时就会予以设置。或者，升级到 RHEL 6.5 或更新版本，它们不存在此错误。将会影响到以下主机： </p>
+</li>
+</ul>
+<p>到此为止，整个集群就安装完成了。</p>
+<p>接下来是集群配置</p>
+<h3 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h3><p><a href="http://192.168.0.12:7180/cmf/clusters/1/express-add-services/index" target="_blank" rel="noopener">http://192.168.0.12:7180/cmf/clusters/1/express-add-services/index</a></p>
+<p>数据库设置</p>
+<p>默认 postgresql: hive xFWqCmc67A</p>
+<p>首次运行:</p>
+<p>可能会遇到的问题：</p>
+<p>Hive Metastore Database Host must be configured when Hive metastore is configured to use a database other than Derby.</p>
+<p>安装hive的时候的问题：</p>
+<p><a href="https://www.cloudera.com/documentation/enterprise/5-6-x/topics/cdh_ig_hive_metastore_configure.html" target="_blank" rel="noopener">cdh_ig_hive_metastore_configure</a></p>
+<p>hive 自身，也需要数据库。</p>
+<p>配置文件在 /etc/hive/conf/ 中。</p>
+</div><div class="tags"><a href="/tags/hadoop/">hadoop</a></div><div class="post-nav"><a class="pre" href="/2016/08/27/线程-线程本地存储/">线程-线程本地存储</a><a class="next" href="/2016/08/25/native方法的调用及JNI/">native方法的调用及JNI</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interface/" style="font-size: 15px;">interface</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/Collections/" style="font-size: 15px;">Collections</a> <a href="/tags/Collection/" style="font-size: 15px;">Collection</a> <a href="/tags/J-U-C/" style="font-size: 15px;">J.U.C</a> <a href="/tags/lock/" style="font-size: 15px;">lock</a> <a href="/tags/Semaphore/" style="font-size: 15px;">Semaphore</a> <a href="/tags/CyclicBarrier/" style="font-size: 15px;">CyclicBarrier</a> <a href="/tags/CountDownLatch/" style="font-size: 15px;">CountDownLatch</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/LinkedList/" style="font-size: 15px;">LinkedList</a> <a href="/tags/Queue/" style="font-size: 15px;">Queue</a> <a href="/tags/Set/" style="font-size: 15px;">Set</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/collection/" style="font-size: 15px;">collection</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/api/" style="font-size: 15px;">api</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/context/" style="font-size: 15px;">context</a> <a href="/tags/component-scan/" style="font-size: 15px;">component-scan</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/cmder/" style="font-size: 15px;">cmder</a> <a href="/tags/win/" style="font-size: 15px;">win</a> <a href="/tags/效率/" style="font-size: 15px;">效率</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/博客/" style="font-size: 15px;">博客</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/extends/" style="font-size: 15px;">extends</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/svn/" style="font-size: 15px;">svn</a> <a href="/tags/BlockingQueue/" style="font-size: 15px;">BlockingQueue</a> <a href="/tags/LinkedBlockingQueue/" style="font-size: 15px;">LinkedBlockingQueue</a> <a href="/tags/PriorityBlockingQueue/" style="font-size: 15px;">PriorityBlockingQueue</a> <a href="/tags/ConcurrentLinkedQueue/" style="font-size: 15px;">ConcurrentLinkedQueue</a> <a href="/tags/CopyOnWriteArrayList/" style="font-size: 15px;">CopyOnWriteArrayList</a> <a href="/tags/接口/" style="font-size: 15px;">接口</a> <a href="/tags/抽象类/" style="font-size: 15px;">抽象类</a> <a href="/tags/Executor/" style="font-size: 15px;">Executor</a> <a href="/tags/ExecutorService/" style="font-size: 15px;">ExecutorService</a> <a href="/tags/CompletionService/" style="font-size: 15px;">CompletionService</a> <a href="/tags/ThreadPoolExecutor/" style="font-size: 15px;">ThreadPoolExecutor</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/vundle/" style="font-size: 15px;">vundle</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/log/" style="font-size: 15px;">log</a> <a href="/tags/index/" style="font-size: 15px;">index</a> <a href="/tags/concepts/" style="font-size: 15px;">concepts</a> <a href="/tags/Timer/" style="font-size: 15px;">Timer</a> <a href="/tags/TimerTask/" style="font-size: 15px;">TimerTask</a> <a href="/tags/ConcurrentMap/" style="font-size: 15px;">ConcurrentMap</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 15px;">ConcurrentHashMap</a> <a href="/tags/HashMap/" style="font-size: 15px;">HashMap</a> <a href="/tags/ReentrantReadWriteLock/" style="font-size: 15px;">ReentrantReadWriteLock</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/SynchronousQueue/" style="font-size: 15px;">SynchronousQueue</a> <a href="/tags/ScheduledExecutorService/" style="font-size: 15px;">ScheduledExecutorService</a> <a href="/tags/AQS/" style="font-size: 15px;">AQS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/BigData-docker/">Windows 上安装 docker</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-0.路线/">Mysql学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-索引/">Mysql安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/Qunar基础框架-QSchedule/">Qunar基础框架-QSchedule</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/java集合构架中使用到的数据结构和算法/">java集合构架中使用到的数据结构和算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/reids-调试环境搭建/">redis-调试环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/31/OpenStack-安装/">OpenStack-安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/26/JVM-hotspot-GC机制/">JVM-hotspot-GC机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/netty-socketio + socket.io 实现消息推送/">netty-socketio + socket.io 实现消息推送</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/26/mongodb-安装/">mongodb-安装</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/a-ray-of-sunshine" title="github" target="_blank">github</a><ul></ul><a href="http://www.cnblogs.com/a-ray-of-sunshine" title="cnblog" target="_blank">cnblog</a><ul></ul><a href="http://blog.csdn.net/a_ray_of_sunshine" title="csdn" target="_blank">csdn</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Shawshank.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

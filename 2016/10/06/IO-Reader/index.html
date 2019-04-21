@@ -1,0 +1,135 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Reader &amp; Writer | Shawshank</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Reader &amp; Writer</h1><a id="logo" href="/.">Shawshank</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Reader &amp; Writer</h1><div class="post-meta">Oct 6, 2016</div><div class="post-content"><h2 id="Reader-amp-Writer"><a href="#Reader-amp-Writer" class="headerlink" title="Reader &amp; Writer"></a>Reader &amp; Writer</h2><h3 id="Reader"><a href="#Reader" class="headerlink" title="Reader"></a>Reader</h3><ul>
+<li>BufferedReader<ul>
+<li>LineNumberReader</li>
+</ul>
+</li>
+<li>CharArrayReader</li>
+<li>FilterReader<ul>
+<li>PushbackReader</li>
+</ul>
+</li>
+<li>InputStreamReader<ul>
+<li>FileReader</li>
+</ul>
+</li>
+<li>PipedReader</li>
+<li>StringReader</li>
+</ul>
+<h3 id="Writer"><a href="#Writer" class="headerlink" title="Writer"></a>Writer</h3><ul>
+<li>BufferedWriter</li>
+<li>CharArrayWriter</li>
+<li>FilterWriter</li>
+<li>OutputStreamWriter<ul>
+<li>FileWriter</li>
+</ul>
+</li>
+<li>PipedWriter</li>
+<li>PrintWriter</li>
+<li>StringWriter</li>
+</ul>
+<p>Reader &amp; Writer 也是流类 API， 不过和 InputStream &amp; OutputStream 不同的是它们操作的数据对象是字符流，而不是字节流。<strong>字符流操作的对象就是 char , 也就是两个字节的 UTF-16 编码的数据。</strong></p>
+<p>同样 Reader 系列的流的前缀表示的流的来源，表示流从什么地方读取数据。例如： CharArrayReader，这个字符流的数据来源就是 CharArray 也即字符数组。</p>
+<p>Writer 系列流的前缀表示流的去向，表示流将被写入到哪里。例如：FileWriter 数据将被写入到 File（文件）中去。</p>
+<p>基本上，Reader 和 Writer 都有互相对应的流，这也是 IO 的一个特点：流可以写入到 A 中，自然也应该可以从 A 中读取出来。反之亦然。</p>
+<h2 id="BufferedReader-amp-BufferedWriter"><a href="#BufferedReader-amp-BufferedWriter" class="headerlink" title="BufferedReader &amp; BufferedWriter"></a>BufferedReader &amp; BufferedWriter</h2><p>使得 Reader 和 Writer 的过程带有缓冲区功能。默认的缓冲区大小 8KB。 使用缓冲区使得低层流的I/O次数减少，从提高效率。</p>
+<p>注意： 在字节流中，BufferedInputStream 和 BufferedOutputStream 是 Filter 流，而这里却直接继承自 Reader 和 Writer，而不是继承自 FilterReader 和 FilterWriter。</p>
+<h3 id="按行读写数据"><a href="#按行读写数据" class="headerlink" title="按行读写数据"></a>按行读写数据</h3><ul>
+<li><p>BufferedReader.readLine</p>
+<blockquote>
+<p>Reads a line of text. A line is considered to be terminated by any one of a line feed (‘\n’), a carriage return (‘\r’), or a carriage return followed immediately by a linefeed.</p>
+</blockquote>
+<p>  从字符流中读取一行数据。注意行结束符，可以是 ‘\r’, ‘\n’, ‘\r\n’. 一旦遇到这三个字符中的任意一个，都会认为是一行数据。</p>
+<blockquote>
+<p>A String containing the contents of the line, not including any line-termination characters.</p>
+</blockquote>
+<p>  返回的数据中，并不会包含行结束符。</p>
+</li>
+<li><p>BufferedWriter.newLine</p>
+<blockquote>
+<p>Writes a line separator. The line separator string is defined by the system property line.separator, and is not necessarily a single newline (‘\n’) character.</p>
+</blockquote>
+<p>  向字符流中写入一个行结束符。这里的行结束符来自系统属性 line.separator。一般在 windows 平台是 ‘\r\n’, 在 linux 平台是 ‘\n’</p>
+</li>
+</ul>
+<h3 id="mark-amp-reset"><a href="#mark-amp-reset" class="headerlink" title="mark &amp; reset"></a>mark &amp; reset</h3><p>BufferedReader 支持 mark &amp; reset 操作。</p>
+<h3 id="flush"><a href="#flush" class="headerlink" title="flush"></a>flush</h3><p>将缓冲区的数据写入到底层的流中。</p>
+<h2 id="CharArrayReader-amp-CharArrayWriter"><a href="#CharArrayReader-amp-CharArrayWriter" class="headerlink" title="CharArrayReader &amp; CharArrayWriter"></a>CharArrayReader &amp; CharArrayWriter</h2><p>char[] 成为，数据的源头或者目的地。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** The character buffer. */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">char</span> buf[];</span><br></pre></td></tr></table></figure>
+<p>内部均有一个这样在的字段，用来存储待操作的字符数组。</p>
+<ul>
+<li><p>对于 CharArrayReader 来说，read 方法将从这个数据中读取数据。</p>
+<p>  <strong> CharArrayReader 共享原始的外部字符数组 </strong></p>
+<p>  这个字段指向的是从构造函数中传入的待读取的 buf 引用，注意它不会将外部的 char 数组进行复制，而是直接使用。</p>
+</li>
+<li><p>对于 CharArrayWriter 来说，writer 方法将向这个数组中写入数据。 </p>
+<p>  <strong> CharArrayWriter 通过扩容操作保证数据可以写入 </strong></p>
+<p>  默认的容量是 32。但是其的 write 方法会在写入之前检测是否可以存储，如果无法存储，将会进行扩容操作。所有可以认为 CharArrayWriter 可以写入无限多个字符。其内部的扩容策略如下：</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// count 表示当前 buf 中已经写入的字符个数，len 表示等待写入字符的个数</span></span><br><span class="line">   <span class="keyword">int</span> newcount = count + len;</span><br><span class="line">   <span class="keyword">if</span> (newcount &gt; buf.length) &#123;</span><br><span class="line">       buf = Arrays.copyOf(buf, Math.max(buf.length &lt;&lt; <span class="number">1</span>, newcount));</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>  如果当前 buf 的长度 * 2 大于，需求的个数，则使用这个长度去扩容，否则，使用需要的长度去扩容。</p>
+</li>
+</ul>
+<h3 id="mark-amp-reset-1"><a href="#mark-amp-reset-1" class="headerlink" title="mark &amp; reset"></a>mark &amp; reset</h3><p>CharArrayReader 支持 mark &amp; reset 方法。</p>
+<h3 id="flush-1"><a href="#flush-1" class="headerlink" title="flush"></a>flush</h3><p>CharArrayWriter 因为操作的是字符数组，其实就是内存操作，并没有占用外部设备，资源等等。所以 flush 操作是空实现，donothing.</p>
+<h3 id="close"><a href="#close" class="headerlink" title="close"></a>close</h3><p>CharArrayReader 的将关闭操作将使其内部引用的 buf 置为 null, 由于 read 操作会对 buf 进行判断空，当 close 调用之后，再次调用 read 将触发异常： throw new IOException(“Stream closed”);</p>
+<p>CharArrayWriter 的close 是空实现，也就是说当调用 close 之后，不会对后续的 write 操作产生任何影响。之所以这样实现的原因是：</p>
+<blockquote>
+<p>This method does not release the buffer, since its contents might still be required. </p>
+</blockquote>
+<p><strong>但是从接口约定的语义规则上来说，当调用 close 之后，就表示这个字符流已经被关闭了，所以不能也不应该进行调用 write 来使用这个流了。</strong></p>
+<p>CharArrayWriter 将写入字符存储在 buf 中，可以通过 <code>toCharArray</code> 方法获得 buf 中的chars.</p>
+<h2 id="PipedReader-amp-PipedWriter"><a href="#PipedReader-amp-PipedWriter" class="headerlink" title="PipedReader &amp; PipedWriter"></a>PipedReader &amp; PipedWriter</h2><p>这两个类构成了一个字符流管道，PipedReader 和 PipedWriter 可以相互连接在一起，然后，由 PipedWriter 向 pipe 中写入字符数据，PipedReader 将从 pipe 中读取数据。</p>
+<p>它们两者之间都可以相互发起 connect, 但是只需要一方进行 connect 管道就可以正常使用了，一旦再次调用 connect，就会发生 throw new IOException(“Already connected”); 已经连接异常。</p>
+<p>管道的内部结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* The size of the pipe's circular input buffer.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_PIPE_SIZE = <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The circular buffer into which incoming data is placed.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">char</span> buffer[];</span><br><span class="line"></span><br><span class="line"><span class="comment">// PipedReader 内部有一个 1KB 的缓冲区。这个缓冲区其实就充当的管道的角色</span></span><br><span class="line"><span class="comment">// PipedWriter 将字符流 write 到 buffer 中， PipedReader 从 buffer 中读取字符流</span></span><br><span class="line"></span><br><span class="line">						 +-----------------+</span><br><span class="line">PipedWriter ---chars---&gt; |  pipe(buffer)   |---chars---&gt; PipedReader</span><br><span class="line">						 +-----------------+</span><br></pre></td></tr></table></figure>
+<p>通常 PipedWriter 在线程 A 中向管道中写入数据，PipedReader 在线程 B 中从管道中读取数据。如果 线程 A 和 线程 B 在数据生产(write)和消费(read)的速率不同，会出现，pipe 为空，或者 pipe 被占满。</p>
+<ul>
+<li><p>当 PipedWriter 的速率大于 PipedReader </p>
+<p>  管道可能被占满，此时 PipedWriter 再调用 write 方法线程将进行 wait 状态。直到 PipedReader 从管道中消费了数据，pipe 有了存储空间，write 方法就可以继续使用了。</p>
+</li>
+<li><p>当 PipedReader 的速率大于 PipedWriter </p>
+<p>  管道可能为空，此时 PipedReader 再调用 read 方法线程将进行 wait 状态。直到 PipedWriter 向管道中写入到数据，PipedReader 就可以消费了。</p>
+</li>
+</ul>
+<h3 id="close-1"><a href="#close-1" class="headerlink" title="close"></a>close</h3><p>管道的任何一方调用 close 方法将使得管道被关闭，继续使用 write 和 read 将出现。throw new IOException(“Pipe closed”);</p>
+<h2 id="StringReader-amp-StringWriter"><a href="#StringReader-amp-StringWriter" class="headerlink" title="StringReader &amp; StringWriter"></a>StringReader &amp; StringWriter</h2><h3 id="StringReader"><a href="#StringReader" class="headerlink" title="StringReader"></a>StringReader</h3><p>将使用 String 作为数据源头。read 方法将读取构成一个 String 的一个个字符，通过 String 类的</p>
+<ul>
+<li>String.charAt</li>
+<li>String.getChars</li>
+</ul>
+<p>方法来实现，charAt 获得指定索引处的字符，getChars 获得指定长度的chars.</p>
+<p>支持 mark &amp; reset 操作。</p>
+<p>close 方法将使用引用的 str 置为 null. 后续的 read 调用将引发 IOException(“Stream closed”)。</p>
+<h3 id="StringWriter"><a href="#StringWriter" class="headerlink" title="StringWriter"></a>StringWriter</h3><p>内部持有一个 StringBuffer， StringWriter 的 write 操作调用 buf 的 apped 方法将数据写入到 StringBuffer 中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private StringBuffer buf;</span><br></pre></td></tr></table></figure>
+<p>支持 mark &amp; reset</p>
+<p>close 方法 donothing. 和 CharArrayWriter 类似，方便 buf 中的数据被再次使用。</p>
+<p>调用 <code>getBuffer</code> 方法用来获得底层的 buf.</p>
+<h2 id="LineNumberReader"><a href="#LineNumberReader" class="headerlink" title="LineNumberReader"></a>LineNumberReader</h2><p>行结束符： ‘\r’(0x0D), ‘\n’(0x0A), ‘\r\n’(0x0D0A) 读取的字符流中如果遇到这三个字符中的任意一个，就认为是一行数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/** The current line number */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> lineNumber = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>lineNumber 用来跟踪行数。每遇到一行，就增加1.</p>
+<h3 id="public-int-read"><a href="#public-int-read" class="headerlink" title="public int read()"></a>public int read()</h3><p>每次读取一个字符。</p>
+<p>LineNumberReader 的 read 方法在读取过程中如果遇到行结束符，统一返回 ‘\n’(0x0A)，如果行结束符是 ‘\r\n’ 在 read 读取到 ‘\r’ 时会将 lineNumber++， 然后直接返回 ‘\n’, 等到下次调用 read 时应该是 ‘\n’, 但是会直接跳过，读取下一个有效的字符。相当于三种类型的行结束符都被压缩成了 ‘\n’</p>
+<p>所以文档中说：</p>
+<blockquote>
+<p>Read a single character. Line terminators are compressed into single newline (‘\n’) characters. </p>
+<p>Whenever a line terminator is read the current line number is incremented.</p>
+</blockquote>
+<h3 id="getLineNumber"><a href="#getLineNumber" class="headerlink" title="getLineNumber"></a>getLineNumber</h3><p>可以通过这个方法获得当前读取数据的行号。</p>
+<h2 id="PushbackReader"><a href="#PushbackReader" class="headerlink" title="PushbackReader"></a>PushbackReader</h2><p><strong>内部持有一个固定 size 的 字符 buffer, 可以允许指定 size 的字符被回退到当前字符流，read 方法将优先读取 buffer 中的字符，然后从底层流中读取。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PushbackReader</span> <span class="keyword">extends</span> <span class="title">FilterReader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Pushback buffer */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span>[] buf;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Current position in buffer */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> pos;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>内部持有一个 buf, 注意这个 buf 的大小在创建 PushbackReader 时就固定了，如果没有指定，则默认是 1 ，也就是说只允许 1 个字符被 pushback.</p>
+<p>unread 方法不会因为没有存储空间，而自动扩容。而是直接抛出异常： new IOException(“Pushback buffer overflow”);</p>
+<p>所以在创建 PushbackReader 的时候，需要考虑好这个 Reader 的使用方式，给 buf 指定适合的 size.</p>
+<p>不支持 mark &amp; reset 方法。</p>
+<h2 id="InputStreamReader-amp-OutputStreamWriter"><a href="#InputStreamReader-amp-OutputStreamWriter" class="headerlink" title="InputStreamReader &amp; OutputStreamWriter"></a>InputStreamReader &amp; OutputStreamWriter</h2><p>字节流和字符流之间的桥梁。</p>
+<p>其内部持有编解码器，用来进行字符和字节之间的编解码。</p>
+<p>InputStreamReader 从 InputStream 读取出字节后,使用指定的字符集的 Decoder 解码成 UTF-16的 char 数据，然后被读取。</p>
+<p>OutputStreamWriter 将 UTF-16 编码的 char 数据，通过指定字符集的 Encoder 编码成字节数据 写入到底层的 OutputStream 中。</p>
+<p>如果没有指定字符集，这两个类使用系统默认的字符集：Charset.defaultCharset()。</p>
+<p>所以，如果使用到这两个类的 read 和 write 系列方法，其内部将会进行编解码操作，从效率方面考虑，一般使用下面的形式使用这两个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过增加缓冲区，减少对编码器的的编解码功能的调用，从而提高效率</span></span><br><span class="line">Reader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(inputStream));</span><br><span class="line">Writer out = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(outputStream));</span><br></pre></td></tr></table></figure>
+<h3 id="FileReader-amp-FileWriter"><a href="#FileReader-amp-FileWriter" class="headerlink" title="FileReader &amp; FileWriter"></a>FileReader &amp; FileWriter</h3><p>分别为 InputStreamReader &amp; OutputStreamWriter 的子类，以字符流的形式读写文件。</p>
+<p>虽然文本文件的读写是非常常用的功能，但是这两个类的使用确需要注意，因为它们将使用默认的的字符集对文件进行编解码，而没有参数，可以设置字符集。所以下面的情况下可能会出现问题： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 假设 1. a.txt 是 GBK 编码的文本文件</span></span><br><span class="line"><span class="comment">//      2. 系统默认的字符集是 UTF-8。</span></span><br><span class="line">FileReader fr = <span class="keyword">new</span> FileReader(<span class="string">"a.txt"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个调用，将引发，底层的解码器按照 UTF-8 对 a.txt 中的字节流进行解码</span></span><br><span class="line"><span class="comment">// 但是，a.txt 却是 GBK 编码的，所以 会出现乱码问题。</span></span><br><span class="line"><span class="keyword">int</span> c = read();</span><br></pre></td></tr></table></figure>
+<p>所以对于文件文本的读写推荐的方法是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 其 fileEncodeName 是 a.txt 这个文件字符数据的编码格式</span></span><br><span class="line">Reader in = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(<span class="keyword">new</span> FileInputStream(<span class="string">"a.txt"</span>), Charset.forName(<span class="string">"fileEncodeName"</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 其 fileEncodeName 是 以何种编码将字符数据保存到 a.txt 这个文件中</span></span><br><span class="line">Writer out = <span class="keyword">new</span> BufferedWriter(<span class="keyword">new</span> OutputStreamWriter(<span class="keyword">new</span> FileOutputStream(<span class="string">"a.txt"</span>), Charset.forName(<span class="string">"fileEncodeName"</span>)));</span><br></pre></td></tr></table></figure></div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2016/10/12/IO-io包中的常用工具类/">io包中的常用工具类</a><a class="next" href="/2016/10/03/IO-可打印流/">可打印流</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interface/" style="font-size: 15px;">interface</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/Collections/" style="font-size: 15px;">Collections</a> <a href="/tags/Collection/" style="font-size: 15px;">Collection</a> <a href="/tags/J-U-C/" style="font-size: 15px;">J.U.C</a> <a href="/tags/lock/" style="font-size: 15px;">lock</a> <a href="/tags/Semaphore/" style="font-size: 15px;">Semaphore</a> <a href="/tags/CyclicBarrier/" style="font-size: 15px;">CyclicBarrier</a> <a href="/tags/CountDownLatch/" style="font-size: 15px;">CountDownLatch</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/LinkedList/" style="font-size: 15px;">LinkedList</a> <a href="/tags/Queue/" style="font-size: 15px;">Queue</a> <a href="/tags/Set/" style="font-size: 15px;">Set</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/collection/" style="font-size: 15px;">collection</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/api/" style="font-size: 15px;">api</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/context/" style="font-size: 15px;">context</a> <a href="/tags/component-scan/" style="font-size: 15px;">component-scan</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/cmder/" style="font-size: 15px;">cmder</a> <a href="/tags/win/" style="font-size: 15px;">win</a> <a href="/tags/效率/" style="font-size: 15px;">效率</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/博客/" style="font-size: 15px;">博客</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/extends/" style="font-size: 15px;">extends</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/svn/" style="font-size: 15px;">svn</a> <a href="/tags/BlockingQueue/" style="font-size: 15px;">BlockingQueue</a> <a href="/tags/LinkedBlockingQueue/" style="font-size: 15px;">LinkedBlockingQueue</a> <a href="/tags/PriorityBlockingQueue/" style="font-size: 15px;">PriorityBlockingQueue</a> <a href="/tags/ConcurrentLinkedQueue/" style="font-size: 15px;">ConcurrentLinkedQueue</a> <a href="/tags/CopyOnWriteArrayList/" style="font-size: 15px;">CopyOnWriteArrayList</a> <a href="/tags/接口/" style="font-size: 15px;">接口</a> <a href="/tags/抽象类/" style="font-size: 15px;">抽象类</a> <a href="/tags/Executor/" style="font-size: 15px;">Executor</a> <a href="/tags/ExecutorService/" style="font-size: 15px;">ExecutorService</a> <a href="/tags/CompletionService/" style="font-size: 15px;">CompletionService</a> <a href="/tags/ThreadPoolExecutor/" style="font-size: 15px;">ThreadPoolExecutor</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/vundle/" style="font-size: 15px;">vundle</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/log/" style="font-size: 15px;">log</a> <a href="/tags/index/" style="font-size: 15px;">index</a> <a href="/tags/concepts/" style="font-size: 15px;">concepts</a> <a href="/tags/Timer/" style="font-size: 15px;">Timer</a> <a href="/tags/TimerTask/" style="font-size: 15px;">TimerTask</a> <a href="/tags/ConcurrentMap/" style="font-size: 15px;">ConcurrentMap</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 15px;">ConcurrentHashMap</a> <a href="/tags/HashMap/" style="font-size: 15px;">HashMap</a> <a href="/tags/ReentrantReadWriteLock/" style="font-size: 15px;">ReentrantReadWriteLock</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/SynchronousQueue/" style="font-size: 15px;">SynchronousQueue</a> <a href="/tags/ScheduledExecutorService/" style="font-size: 15px;">ScheduledExecutorService</a> <a href="/tags/AQS/" style="font-size: 15px;">AQS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/BigData-docker/">Windows 上安装 docker</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-0.路线/">Mysql学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-索引/">Mysql安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/Qunar基础框架-QSchedule/">Qunar基础框架-QSchedule</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/java集合构架中使用到的数据结构和算法/">java集合构架中使用到的数据结构和算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/reids-调试环境搭建/">redis-调试环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/31/OpenStack-安装/">OpenStack-安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/26/JVM-hotspot-GC机制/">JVM-hotspot-GC机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/netty-socketio + socket.io 实现消息推送/">netty-socketio + socket.io 实现消息推送</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/26/mongodb-安装/">mongodb-安装</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/a-ray-of-sunshine" title="github" target="_blank">github</a><ul></ul><a href="http://www.cnblogs.com/a-ray-of-sunshine" title="cnblog" target="_blank">cnblog</a><ul></ul><a href="http://blog.csdn.net/a_ray_of_sunshine" title="csdn" target="_blank">csdn</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Shawshank.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

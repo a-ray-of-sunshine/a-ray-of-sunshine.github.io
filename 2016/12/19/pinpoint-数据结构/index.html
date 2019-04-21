@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>pinpoint-数据结构 | Shawshank</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">pinpoint-数据结构</h1><a id="logo" href="/.">Shawshank</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">pinpoint-数据结构</h1><div class="post-meta">Dec 19, 2016</div><div class="post-content"><p>pinpoint 的业务对象（BO）在 pinpoint-commons-server 工程中。hbase 中每一个表都对应其中的一个类。</p>
+<p>例如：AgentEvent 表，对应于 AgentEventBo 类。</p>
+<p>pinpoint-commons-server 中的 BO 类，是被 web 和 collector 所共享的，对于 collector 来说，它执行插入操作，所以其 dao 层的 <code>AgentEventDao</code> 提供了 <code>void insert(AgentEventBo agentEventBo);</code> 方法。</p>
+<p>而对于 web 层来说，其所主要功能是进行查询，所以其所提供的是 dao 层 <code>AgentEventDao</code> 主要是 <code>get</code> 方法，例如：查询全部数据，查询某个时间范围内的数据，查询某条记录等。</p>
+<p><strong>com.navercorp.pinpoint.collector.handler 包就是 collector 用来处理 agent 发送过来的数据。进行数据入库操作</strong></p>
+<h2 id="application-list"><a href="#application-list" class="headerlink" title="application list"></a>application list</h2><p>web端在 com.navercorp.pinpoint.web.controller 包中。</p>
+<ul>
+<li><p>查询应用列表</p>
+<p>  url: /applications</p>
+<p>  control: com.navercorp.pinpoint.web.controller.MainController</p>
+</li>
+</ul>
+<p>应用列表：</p>
+<p>ApplicationIndex 表</p>
+<p>该表相关的DAO类：com.navercorp.pinpoint.web.dao.hbase.HbaseApplicationIndexDao</p>
+<p>com.navercorp.pinpoint.web.mapper.ApplicationNameMapper</p>
+<p>有三个字段</p>
+<ol>
+<li><p>name</p>
+<p> 存储的agent启动时，指定的 applicationName 这个参数，代表监控的应用的名称</p>
+</li>
+<li><p>agentid</p>
+<p> agent启动时，指定的 agentID 参数，用来惟一标识一个agent.</p>
+</li>
+<li><p>timestamp</p>
+<p> agetn 启动的时间。</p>
+</li>
+<li><p>value</p>
+<p> 这个参数表示表示 Application 的类型编码，在 com.navercorp.pinpoint.common.trace.ServiceType 接口有相关的描述。</p>
+<p> 例如： 1010 表示的 tomcat 服务器， 1030 表示 jetty 容器。</p>
+</li>
+</ol>
+<h2 id="AgentEvent"><a href="#AgentEvent" class="headerlink" title="AgentEvent"></a>AgentEvent</h2><p>表示 Agent 当前的运行状态。</p>
+<p><code>com.navercorp.pinpoint.web.vo.AgentEvent</code></p>
+<ol>
+<li><p>agentId</p>
+<p> 表示 agent id</p>
+</li>
+<li><p>eventTimestamp</p>
+<p> 事件发生的时间戳</p>
+</li>
+<li><p>eventTypeCode</p>
+<p> 事件类型编码。这个编码是在 com.navercorp.pinpoint.common.util.AgentEventType 类中。</p>
+</li>
+<li><p>eventTypeDesc</p>
+<p> 事件类型描述</p>
+</li>
+<li><p>hasEventMessage</p>
+<p> 是否存在 eventMessage 事件消息</p>
+</li>
+<li><p>eventMessage</p>
+<p> 事件消息。Object类型，依照 eventTypeCode 的不同，其中存储的数据也不同。</p>
+</li>
+</ol>
+<h2 id="AgentInfo"><a href="#AgentInfo" class="headerlink" title="AgentInfo"></a>AgentInfo</h2><p><code>com.navercorp.pinpoint.common.bo.AgentInfoBo</code></p>
+<p><code>com.navercorp.pinpoint.web.vo.AgentInfo</code></p>
+<p>对应 agent 的详细信息，例如 agent 所在的主机名，ip, 还有 JVM 信息，Agent的状态，Agent的版本等等。</p>
+<h2 id="AgentLifeCycle"><a href="#AgentLifeCycle" class="headerlink" title="AgentLifeCycle"></a>AgentLifeCycle</h2><p>表示 agent 的生命周期。</p>
+<p>与这相关的类。</p>
+<p><code>com.navercorp.pinpoint.common.bo.AgentLifeCycleBo</code></p>
+<p>相关字段信息：</p>
+<ul>
+<li><p>version</p>
+<p>  agent 版本</p>
+</li>
+<li><p>agentId</p>
+<p>  agent id</p>
+</li>
+<li><p>startTimestamp</p>
+<p>  agent 启动时间</p>
+</li>
+<li><p>eventTimestamp</p>
+<p>  事件发生的时间</p>
+</li>
+<li><p>eventIdentifier</p>
+<p>  事件标识</p>
+</li>
+<li><p>agentLifeCycleState</p>
+<p>  有下面几种状态。</p>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RUNNING((<span class="keyword">short</span>)<span class="number">100</span>, <span class="string">"Running"</span>),</span><br><span class="line">   SHUTDOWN((<span class="keyword">short</span>)<span class="number">200</span>, <span class="string">"Shutdown"</span>),</span><br><span class="line">   UNEXPECTED_SHUTDOWN((<span class="keyword">short</span>)<span class="number">201</span>, <span class="string">"Unexpected Shutdown"</span>),</span><br><span class="line">   DISCONNECTED((<span class="keyword">short</span>)<span class="number">300</span>, <span class="string">"Disconnected"</span>),</span><br><span class="line">   UNKNOWN((<span class="keyword">short</span>)-<span class="number">1</span>, <span class="string">"Unknown"</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="AgentStat"><a href="#AgentStat" class="headerlink" title="AgentStat"></a>AgentStat</h2><p>表示 Agent 的基本情况。例如： 堆使用率，堆大小，jvm CPU使用率等等。</p>
+<p><code>com.navercorp.pinpoint.web.vo.AgentStat</code></p>
+<h2 id="ApiMetaData"><a href="#ApiMetaData" class="headerlink" title="ApiMetaData"></a>ApiMetaData</h2><p><code>com.navercorp.pinpoint.common.bo.ApiMetaDataBo</code></p>
+<ul>
+<li>agentId</li>
+<li>startTime</li>
+<li>apiId</li>
+<li>apiInfo</li>
+<li>lineNumber</li>
+<li>type</li>
+</ul>
+<h2 id="ApplicationMapStatisticsCallee-Ver2"><a href="#ApplicationMapStatisticsCallee-Ver2" class="headerlink" title="ApplicationMapStatisticsCallee_Ver2"></a>ApplicationMapStatisticsCallee_Ver2</h2><h2 id="ApplicationMapStatisticsCaller-Ver2"><a href="#ApplicationMapStatisticsCaller-Ver2" class="headerlink" title="ApplicationMapStatisticsCaller_Ver2"></a>ApplicationMapStatisticsCaller_Ver2</h2><h2 id="ApplicationMapStatisticsSelf-Ver2"><a href="#ApplicationMapStatisticsSelf-Ver2" class="headerlink" title="ApplicationMapStatisticsSelf_Ver2"></a>ApplicationMapStatisticsSelf_Ver2</h2><h2 id="ApplicationTraceIndex"><a href="#ApplicationTraceIndex" class="headerlink" title="ApplicationTraceIndex"></a>ApplicationTraceIndex</h2><p>在 collector 的 dao 层，可以看到在这个表中插入的数据是： TSpan 类型的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// com.navercorp.pinpoint.collector.dao</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ApplicationTraceIndexDao</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(TSpan span)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="HostApplicationMap-Ver2"><a href="#HostApplicationMap-Ver2" class="headerlink" title="HostApplicationMap_Ver2"></a>HostApplicationMap_Ver2</h2><p>host, bindApplicationName, bindServiceType, statisticsRowSlot, parentApplicationName, parentServiceType</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AcceptApplication</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String host;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Application application;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="SqlMetaData-Ver2"><a href="#SqlMetaData-Ver2" class="headerlink" title="SqlMetaData_Ver2"></a>SqlMetaData_Ver2</h2><p>可以通过分析 <code>com.navercorp.pinpoint.collector.dao.hbase.HbaseSqlMetaDataDao.insert</code> 方法获得插入的数据。</p>
+<p>sql 元数据</p>
+<p><code>com.navercorp.pinpoint.common.bo.SqlMetaDataBo</code></p>
+<h2 id="StringMetaData"><a href="#StringMetaData" class="headerlink" title="StringMetaData"></a>StringMetaData</h2><p>存储常用字符串常量</p>
+<ul>
+<li><p>agentId</p>
+</li>
+<li><p>stringId</p>
+</li>
+<li><p>startTime</p>
+</li>
+<li><p>stringValue</p>
+<p>  需要存储的字符串值</p>
+</li>
+</ul>
+<h2 id="Traces"><a href="#Traces" class="headerlink" title="Traces"></a>Traces</h2><p><code>com.navercorp.pinpoint.common.bo.SpanBo</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TracesDao</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insert</span><span class="params">(TSpan span)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">insertSpanChunk</span><span class="params">(TSpanChunk spanChunk)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="关键url"><a href="#关键url" class="headerlink" title="关键url"></a>关键url</h2><h3 id="主界面应用拓扑"><a href="#主界面应用拓扑" class="headerlink" title="主界面应用拓扑"></a>主界面应用拓扑</h3><p>url: getServerMapData</p>
+<p>controller: MapController</p>
+<h3 id="主界面，右侧图表"><a href="#主界面，右侧图表" class="headerlink" title="主界面，右侧图表"></a>主界面，右侧图表</h3><p>url: getScatterData</p>
+<p>controller: ScatterChartController</p>
+<h3 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h3><p>url: transactionInfo</p>
+<p>controller: BusinessTransactionController</p>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2016/12/28/network-URLConnection/">network-URLConnection</a><a class="next" href="/2016/12/16/network-AsynchronousSocketChannel/">network-AsynchronousSocketChannel</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interface/" style="font-size: 15px;">interface</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/Collections/" style="font-size: 15px;">Collections</a> <a href="/tags/Collection/" style="font-size: 15px;">Collection</a> <a href="/tags/J-U-C/" style="font-size: 15px;">J.U.C</a> <a href="/tags/lock/" style="font-size: 15px;">lock</a> <a href="/tags/Semaphore/" style="font-size: 15px;">Semaphore</a> <a href="/tags/CyclicBarrier/" style="font-size: 15px;">CyclicBarrier</a> <a href="/tags/CountDownLatch/" style="font-size: 15px;">CountDownLatch</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/LinkedList/" style="font-size: 15px;">LinkedList</a> <a href="/tags/Queue/" style="font-size: 15px;">Queue</a> <a href="/tags/Set/" style="font-size: 15px;">Set</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/collection/" style="font-size: 15px;">collection</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/api/" style="font-size: 15px;">api</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/context/" style="font-size: 15px;">context</a> <a href="/tags/component-scan/" style="font-size: 15px;">component-scan</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/cmder/" style="font-size: 15px;">cmder</a> <a href="/tags/win/" style="font-size: 15px;">win</a> <a href="/tags/效率/" style="font-size: 15px;">效率</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/博客/" style="font-size: 15px;">博客</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/extends/" style="font-size: 15px;">extends</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/svn/" style="font-size: 15px;">svn</a> <a href="/tags/BlockingQueue/" style="font-size: 15px;">BlockingQueue</a> <a href="/tags/LinkedBlockingQueue/" style="font-size: 15px;">LinkedBlockingQueue</a> <a href="/tags/PriorityBlockingQueue/" style="font-size: 15px;">PriorityBlockingQueue</a> <a href="/tags/ConcurrentLinkedQueue/" style="font-size: 15px;">ConcurrentLinkedQueue</a> <a href="/tags/CopyOnWriteArrayList/" style="font-size: 15px;">CopyOnWriteArrayList</a> <a href="/tags/接口/" style="font-size: 15px;">接口</a> <a href="/tags/抽象类/" style="font-size: 15px;">抽象类</a> <a href="/tags/Executor/" style="font-size: 15px;">Executor</a> <a href="/tags/ExecutorService/" style="font-size: 15px;">ExecutorService</a> <a href="/tags/CompletionService/" style="font-size: 15px;">CompletionService</a> <a href="/tags/ThreadPoolExecutor/" style="font-size: 15px;">ThreadPoolExecutor</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/vundle/" style="font-size: 15px;">vundle</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/log/" style="font-size: 15px;">log</a> <a href="/tags/index/" style="font-size: 15px;">index</a> <a href="/tags/concepts/" style="font-size: 15px;">concepts</a> <a href="/tags/Timer/" style="font-size: 15px;">Timer</a> <a href="/tags/TimerTask/" style="font-size: 15px;">TimerTask</a> <a href="/tags/ConcurrentMap/" style="font-size: 15px;">ConcurrentMap</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 15px;">ConcurrentHashMap</a> <a href="/tags/HashMap/" style="font-size: 15px;">HashMap</a> <a href="/tags/ReentrantReadWriteLock/" style="font-size: 15px;">ReentrantReadWriteLock</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/SynchronousQueue/" style="font-size: 15px;">SynchronousQueue</a> <a href="/tags/ScheduledExecutorService/" style="font-size: 15px;">ScheduledExecutorService</a> <a href="/tags/AQS/" style="font-size: 15px;">AQS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/BigData-docker/">Windows 上安装 docker</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-0.路线/">Mysql学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-索引/">Mysql安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/Qunar基础框架-QSchedule/">Qunar基础框架-QSchedule</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/java集合构架中使用到的数据结构和算法/">java集合构架中使用到的数据结构和算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/reids-调试环境搭建/">redis-调试环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/31/OpenStack-安装/">OpenStack-安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/26/JVM-hotspot-GC机制/">JVM-hotspot-GC机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/netty-socketio + socket.io 实现消息推送/">netty-socketio + socket.io 实现消息推送</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/26/mongodb-安装/">mongodb-安装</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/a-ray-of-sunshine" title="github" target="_blank">github</a><ul></ul><a href="http://www.cnblogs.com/a-ray-of-sunshine" title="cnblog" target="_blank">cnblog</a><ul></ul><a href="http://blog.csdn.net/a_ray_of_sunshine" title="csdn" target="_blank">csdn</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Shawshank.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

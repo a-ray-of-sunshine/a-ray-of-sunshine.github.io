@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>centos6.5安装CDH5.5.1 | Shawshank</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/normalize/8.0.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//lib.baomitu.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//lib.baomitu.com/jquery/3.4.0/jquery.min.js"></script><link rel="icon" mask sizes="any" href="/favicon.ico"><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">centos6.5安装CDH5.5.1</h1><a id="logo" href="/.">Shawshank</a><p class="description"></p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">centos6.5安装CDH5.5.1</h1><div class="post-meta">Sep 29, 2016</div><div class="post-content"><h3 id="安装并配置系统"><a href="#安装并配置系统" class="headerlink" title="安装并配置系统"></a>安装并配置系统</h3><h4 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h4><p>系统使用 centos6.5 64位</p>
+<p><a href="http://archive.kernel.org/centos-vault/6.5/isos/x86_64/CentOS-6.5-x86_64-minimal.iso" target="_blank" rel="noopener">CentOS-6.5-x86_64-minimal</a></p>
+<p><strong>集群中使用到的所有主机必须使用完全相同的系统。</strong></p>
+<h4 id="配置系统"><a href="#配置系统" class="headerlink" title="配置系统"></a>配置系统</h4><ol>
+<li><p>关闭 iptables</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关闭 iptables</span></span><br><span class="line">service iptables stop</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置成开机不启动</span></span><br><span class="line">chkconfig iptables off</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>禁用 SELinux</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># method1</span></span><br><span class="line">vim /etc/selinux/config  <span class="comment"># 改为 SELINUX=disabled</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># method2, 可以在脚本中使用</span></span><br><span class="line">sed -i <span class="string">'s/SELINUX=enforcing/SELINUX=disabled/g'</span> /etc/selinux/config</span><br><span class="line"></span><br><span class="line"><span class="comment"># 临时禁用</span></span><br><span class="line">setenforce 0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置 swappiness</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 临时禁用</span></span><br><span class="line"><span class="built_in">echo</span> 0 &gt; /proc/sys/vm/swappiness</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">sysctl vm.swappiness=10</span><br><span class="line"></span><br><span class="line"><span class="comment"># 永久生效, 在下面文件最后</span></span><br><span class="line"><span class="comment"># 添加 vm.swappiness=0 即可</span></span><br><span class="line">vim /etc/sysctl.conf</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="4">
+<li><p>禁用 透明大页面</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 临时生效</span></span><br><span class="line"><span class="built_in">echo</span> never &gt; /sys/kernel/mm/redhat_transparent_hugepage/defrag</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将下面的代码片断，添加到 /etc/rc.local 文件中。</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> -f /sys/kernel/mm/redhat_transparent_hugepage/enabled; <span class="keyword">then</span></span><br><span class="line"><span class="built_in">echo</span> never &gt; /sys/kernel/mm/redhat_transparent_hugepage/enabled</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">echo</span> never &gt; /sys/kernel/mm/redhat_transparent_hugepage/defrag</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="设置主机的-HOSTNAME"><a href="#设置主机的-HOSTNAME" class="headerlink" title="设置主机的 HOSTNAME"></a>设置主机的 HOSTNAME</h4><p>规划系统。准备4台机器，其中一台中安装clouderaManger 的 server, 其余3台机器作为 clouderaManger 的 agent. 假设，存在四台机器：192.168.0.1[0-3], 则执行以下配置：</p>
+<ol>
+<li><p>设置 HOSTNAME</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在下面文件中添加 HOSTNAME=&lt;HOSTNAME&gt;</span></span><br><span class="line">vi /etc/sysconfig/network</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>每台机器依次设置成如下 hostname:
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">192.168.0.10 &lt;==&gt; clouderaManger </span><br><span class="line">192.168.0.11 &lt;==&gt; hadoop-worker1 </span><br><span class="line">192.168.0.12 &lt;==&gt; hadoop-worker2 </span><br><span class="line">192.168.0.13 &lt;==&gt; hadoop-worker3</span><br></pre></td></tr></table></figure>
+</code></pre><ol start="2">
+<li><p>设置 hosts</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 编辑 hosts 文件</span></span><br><span class="line">vi /etc/hosts</span><br></pre></td></tr></table></figure>
+<p> 在所有主机上的 hosts 文件中追加如下配置:</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">192.168.0.10 clouderaManager</span><br><span class="line">192.168.0.11 hadoop-worker1</span><br><span class="line">192.168.0.12 hadoop-worker2</span><br><span class="line">192.168.0.13 hadoop-worker3</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>上面的设置完成之后，需要重新启动系统。</p>
+<p><strong>以下行文中出现 clouderManager主机 就表示 192.168.0.10 这台机器，同理 hadoop-worker1 表示 192.168.0.11 这台机器</strong></p>
+<h3 id="下载安装文件"><a href="#下载安装文件" class="headerlink" title="下载安装文件"></a>下载安装文件</h3><p>提供，两种形式的包，parcel 和 yum</p>
+<ol>
+<li><p>CouderaManager包</p>
+<p> parcel: 对于 CouderaManager 的 server 和 agent的安装，并没有提供 parcel 形式的包。</p>
+<p> yum: <a href="http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/" target="_blank" rel="noopener">http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/</a></p>
+<p> tarball: <a href="http://archive.cloudera.com/cm5/repo-as-tarball/" target="_blank" rel="noopener">http://archive.cloudera.com/cm5/repo-as-tarball/</a></p>
+<p> 需要下载的文件：</p>
+<p> <a href="http://archive.cloudera.com/cm5/installer/5.5.1/" target="_blank" rel="noopener">cloudera-manager-installer.bin</a></p>
+<p> <a href="http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5.5.1/RPMS/x86_64/" target="_blank" rel="noopener">clouderaManager-下载这个路径下的所有文件</a><br> 对于这个路径下的包，还有另一种下载方法，<a href="http://archive.cloudera.com/cm5/cm/5/cloudera-manager-el6-cm5.5.1_x86_64.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cm5/cm/5/cloudera-manager-el6-cm5.5.1_x86_64.tar.gz</a> 这个路径下的就包含了上面文件夹中的所有包。直接下载即可。</p>
+<p> <strong>将下载好的文件放置到 cm5.5.1 文件夹中。</strong></p>
+</li>
+<li><p>CDH 包</p>
+<p> parcel: <a href="http://archive.cloudera.com/cdh5/parcels/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/parcels/</a></p>
+<p> yum：<a href="http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/</a></p>
+<p> tarball: <a href="http://archive.cloudera.com/cdh5/repo-as-tarball/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/repo-as-tarball/</a></p>
+<p> 需要下载的文件：<br> 如果使用 parcel 形式安装：则下载 <a href="http://archive.cloudera.com/cdh5/parcels/5.5.1/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/parcels/5.5.1/</a> 这个路径下的:</p>
+<ol>
+<li><p><a href="http://archive.cloudera.com/cdh5/parcels/5.5.1/CDH-5.5.1-1.cdh5.5.1.p0.11-el6.parcel" target="_blank" rel="noopener">CDH-5.5.1-1.cdh5.5.1.p0.11-el6.parcel</a></p>
+</li>
+<li><p><a href="http://archive.cloudera.com/cdh5/parcels/5.5.1/CDH-5.5.1-1.cdh5.5.1.p0.11-el6.parcel.sha1" target="_blank" rel="noopener">CDH-5.5.1-1.cdh5.5.1.p0.11-el6.parcel.sha1</a></p>
+</li>
+<li><p><a href="http://archive.cloudera.com/cdh5/parcels/5.5.1/manifest.json" target="_blank" rel="noopener">manifest.json</a></p>
+<p>如果使用 yum 方法安装则下载：</p>
+<p><a href="http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/5.5.1/RPMS/x86_64/" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/redhat/6/x86_64/cdh/5.5.1/RPMS/x86_64/</a></p>
+<p>这个路径下的所有rpm.</p>
+<p>将下载好的文件放置到 cdh5.5.1 文件夹中。</p>
+</li>
+</ol>
+</li>
+<li><p>安装所需的支持包，工具包</p>
+</li>
+</ol>
+<p>3.1 createrepo</p>
+<p>3.2 postgresql</p>
+<p>3.3 cloudera-manager-agent的依赖包</p>
+<p>分别下载之。</p>
+<p>最终将上面下载的文件，以如下的目录结构存放：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">+--- clouderaManager5.5.1</span><br><span class="line">|   +--- cdh5.5.1</span><br><span class="line">|   |   +--- CDH-5.5.1-1.cdh5.5.1.p0.11-el6.parcel</span><br><span class="line">|   |   +--- CDH-5.5.1-1.cdh5.5.1.p0.11-el6.parcel.sha1</span><br><span class="line">|   |   +--- manifest.json</span><br><span class="line">|   +--- <span class="built_in">local</span>-repo</span><br><span class="line">|   |   +--- cm5.5.1</span><br><span class="line">|   |   |   +--- cloudera-manager-agent-5.5.1-1.cm551.p0.8.el6.x86_64.rpm</span><br><span class="line">|   |   |   +--- cloudera-manager-daemons-5.5.1-1.cm551.p0.8.el6.x86_64.rpm</span><br><span class="line">|   |   |   +--- cloudera-manager-server-5.5.1-1.cm551.p0.8.el6.x86_64.rpm</span><br><span class="line">|   |   |   +--- cloudera-manager-server-db-2-5.5.1-1.cm551.p0.8.el6.x86_64.rpm</span><br><span class="line">|   |   |   +--- enterprise-debuginfo-5.5.1-1.cm551.p0.8.el6.x86_64.rpm</span><br><span class="line">|   |   |   +--- jdk-6u31-linux-amd64.rpm</span><br><span class="line">|   |   |   +--- oracle-j2sdk1.7-1.7.0+update67-1.x86_64.rpm</span><br><span class="line">|   |   +--- createrepo</span><br><span class="line">|   |   |   +--- createrepo-0.9.9-24.el6.noarch.rpm</span><br><span class="line">|   |   +--- dependency</span><br><span class="line">|   |   |   +--- agent</span><br><span class="line">|   |   |   |   +--- apr-1.3.9-5.el6_2.x86_64.rpm</span><br><span class="line">|   |   |   |   +--- ......</span><br><span class="line">|   |   |   +--- agent-perl</span><br><span class="line">|   |   |   |   +--- perl-5.10.1-141.el6_7.1.x86_64.rpm</span><br><span class="line">|   |   |   |   +--- ......</span><br><span class="line">|   |   |   +--- common</span><br><span class="line">|   |   |   |   +--- wget-1.16.3-2.fc23.x86_64.rpm</span><br><span class="line">|   |   +--- postgresql</span><br><span class="line">|   |   |   +--- postgresql84-8.4.21-1PGDG.rhel6.x86_64.rpm</span><br><span class="line">|   |   |   +--- postgresql84-contrib-8.4.21-1PGDG.rhel6.x86_64.rpm</span><br><span class="line">|   |   |   +--- postgresql84-libs-8.4.21-1PGDG.rhel6.x86_64.rpm</span><br><span class="line">|   |   |   +--- postgresql84-server-8.4.21-1PGDG.rhel6.x86_64.rpm</span><br><span class="line">|   +--- cloudera-manager-installer.bin</span><br></pre></td></tr></table></figure>
+<p>使用命令进行打包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar cvf clouderaManager5.5.1.tar clouderaManager5.5.1/</span><br></pre></td></tr></table></figure>
+<p>将 clouderaManager5.5.1.tar 上传到 clouderManager主机上。解压之：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar xvf clouderaManager5.5.1.tar</span><br></pre></td></tr></table></figure></p>
+<h3 id="搭建本地-yum-源"><a href="#搭建本地-yum-源" class="headerlink" title="搭建本地 yum 源"></a>搭建本地 yum 源</h3><h4 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h4><ol start="0">
+<li><p>安装 createrepo</p>
+</li>
+<li><p>创建仓库所在文件夹</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/<span class="built_in">local</span>/<span class="built_in">local</span>-repo/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将 clouderaManager5.5.1/local-repo 拷贝到 /usr/local/local-repo/</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp clouderaManager5.5.1/<span class="built_in">local</span>-repo /usr/<span class="built_in">local</span>/<span class="built_in">local</span>-repo/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建仓库</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createrepo -v /usr/<span class="built_in">local</span>/<span class="built_in">local</span>-repo/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>刷新仓库</p>
+<p> 如果，有新的 rpm 添加进来，则使用下面的命令刷新。</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createrepo -v --update /usr/<span class="built_in">local</span>/<span class="built_in">local</span>-repo/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建临时 yum 源服务器</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确定 8900 端口未被占用</span></span><br><span class="line">python -m SimpleHTTPServer 8900</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="6">
+<li><p>验证</p>
+<p> 使用 <code>http://clouderaManager:8900/</code> 访问yum仓库</p>
+<p> <img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-Yum.png" alt></p>
+</li>
+</ol>
+<h4 id="配置本地源"><a href="#配置本地源" class="headerlink" title="配置本地源"></a>配置本地源</h4><ol start="0">
+<li><p>创建 repo 文件</p>
+<p> 在/etc/yum.repo.d/下创建一个local-repo.repo文件，添加如下内容到该文件</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="built_in">local</span>-repo]                    <span class="comment">#仓库名称可以自定义</span></span><br><span class="line">name=This is a <span class="built_in">local</span> repo       <span class="comment">#描述信息</span></span><br><span class="line">baseurl=http://192.168.0.1:8900 <span class="comment"># 或者 http://clouderaManager:8900</span></span><br><span class="line">enabled=1                       <span class="comment">#是否开启仓库，1为开启，0为关闭</span></span><br><span class="line">gpgcheck=0                      <span class="comment">#是否检查gpgkey，1为开启，0为关闭</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>禁用外部源</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv CentOS-Base.repo CentOS-Base.repo.bak</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>刷新yum缓存</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum clean all</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list | grep clouder*</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>可以看到本地仓库中rpm:
+
+cloudera-manager-agent.x86_64
+
+cloudera-manager-daemons.x86_64
+
+说明本地yum源安装成功。 
+</code></pre><h3 id="安装-Cloudera-Manager-Server"><a href="#安装-Cloudera-Manager-Server" class="headerlink" title="安装 Cloudera Manager Server"></a>安装 Cloudera Manager Server</h3><ol>
+<li><p>进入到 clouderaManager5.5.1 目录</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/clouderaManager5.5.1/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装 Server</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./cloudera-manager-installer.bin --skip_repo_package=1</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>**注意:已经配置好了本地仓库，所以添加--skip_repo_package=1，尤其是在clouderManager主机是未联网的情况下一定要添加这个选项**
+
+执行这个命令后会启动一个安装界面，按步骤安装即可。
+
+执行这个命令，会将安装日志记录到 `/var/log/cloudera-manager-installer/` 下面，如果安装过程中遇到问题，可以查看这里的日志信息。
+
+如果，正常安装，则可以看到以下日志记录：
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">0.check-selinux.log</span><br><span class="line">1.install-oracle-j2sdk1.7.log</span><br><span class="line">1.install-repo-pkg.log</span><br><span class="line">2.install-cloudera-manager-server.log</span><br><span class="line">2.install-oracle-j2sdk1.7.log</span><br><span class="line">3.install-cloudera-manager-server-db-2.log</span><br><span class="line">3.remove-cloudera-manager-repository.log</span><br><span class="line">4.start-embedded-db.log</span><br><span class="line">5.start-scm-server.log</span><br></pre></td></tr></table></figure>
+
+
+可以看到如果安装完成，scm-server 将会启动。
+</code></pre><ol start="4">
+<li><p>配置 CDH 源</p>
+<ol>
+<li><p>拷贝 CDH 源</p>
+<p>将 clouderaManager5.5.1/cdh5.5.1 中所有的文件（3个）拷贝到 /opt/cloudera/parcel-repo 仓库中。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/clouderaManager5.5.1/cdh5.5.1/</span><br><span class="line">cp * /opt/cloudera/parcel-repo/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更改文件权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R cloudera-scm:cloudera-scm ./*</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
+<pre><code>Cloudera Manager Server 安装成功之后，会在 /opt 目录下创建 cloudera 文件夹，注意到cloudera-manager-installer.bin会创建一个名为 cloudera-scm 的用户和组，用 cloudera-scm 用户来安装配置文件等，所以配置的CDH源中的文件也需要将其改成 cloudera-scm。 
+</code></pre><ol start="5">
+<li><p>验证</p>
+<p> 在浏览器中输入 <code>http://&lt;clouderaManager&#39;s IP&gt;:7180/</code>, 应该会打开 Cloudera Manager 的 web 管理界面。默认的<strong>用户名：admin, 密码：admin</strong></p>
+<p> 如果没有打开，可以到 /var/log/cloudera-scm-server/ 目录中，查看日志</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f cloudera-scm-server.log</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<pre><code>**注意是 .log 文件，不是 .out 文件。**
+
+![](D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-Login.png)
+</code></pre><h3 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h3><h4 id="安装-agent"><a href="#安装-agent" class="headerlink" title="安装 agent"></a>安装 agent</h4><ol>
+<li><p>为 CDH 群集安装指定主机</p>
+<p> <img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-FindHost.png" alt></p>
+<ol>
+<li><p>输入主机或者ip，Cloudera Manger 将在这些主机上安装 agent,可以通过以下几种方式来指定主机。</p>
+<ul>
+<li>192.168.0.11, 192.168.0.12, 192.168.0.13</li>
+<li>hadoop-worker1, hadoop-worker2, hadoop-worker3</li>
+<li>192.168.0.1[1-3]</li>
+<li>hadoop-worker[1-3]</li>
+</ul>
+</li>
+<li><p>执行搜索</p>
+<p><img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-CheckHost.png" alt></p>
+<p>选中需要安装的主机，点击继续</p>
+</li>
+</ol>
+</li>
+<li><p>群集安装</p>
+<ol>
+<li><p>设置 Parcel 存储库，配置成本地源，将其指定为前面配置的临时yum源。<a href="http://clouderaManager:8900" target="_blank" rel="noopener">http://clouderaManager:8900</a></p>
+<p><img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-SetMediaSource.png" alt></p>
+</li>
+<li><p>设置 agent 的安装源，配置成本地源，将其指定为前面配置的临时yum源。<a href="http://clouderaManager:8900，然后继续" target="_blank" rel="noopener">http://clouderaManager:8900，然后继续</a></p>
+<p><img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-SetAgentSource.png" alt></p>
+</li>
+<li><p>JDK 安装选项</p>
+<p> 勾选 安装 Oracle Java SE 开发工具包 (JDK)</p>
+</li>
+<li><p>正在安装</p>
+<p> <img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-InstallAgent.png" alt></p>
+<p> 安装过程中，可以点击 详细信息 查看安装日志。</p>
+<p> 也可以在 <code>/var/log/cloudera-scm-agent/</code> 中找到安装日志。 </p>
+<p> <img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-InstallSuccess.png" alt></p>
+<p> <strong>这个步骤完成之后，agent就会启动，协助 server安装 CDH</strong></p>
+</li>
+<li><p>正在安装选定 Parcel</p>
+<p> <img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-InstallParcel.png" alt></p>
+</li>
+<li><p>检查主机正确性</p>
+<p> 到此为到 agent 已经安装好了， CDH的 parcels包，也已经拷贝到 /opt/cloudera/parcels 处。CouderaManager server和agent安装完毕。</p>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="群集设置"><a href="#群集设置" class="headerlink" title="群集设置"></a>群集设置</h4><p><img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-SelectService.png" alt></p>
+<p>在这个界面中选择，需要安装的组件。安装默认配置安装即可。</p>
+<p>安装配置完之后:</p>
+<p><img src="D:\cygwin64\home\Administrator\workspace\a-ray-of-sunshine.github.io\source\images\ClouderaManager-Success.png" alt></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="http://www.cloudera.com/documentation/enterprise/release-notes/topics/rn_consolidated_pcm.html" target="_blank" rel="noopener">CDH 5 and Cloudera Manager 5 Requirements and Supported Versions</a></li>
+<li><a href="http://www.cloudera.com/documentation/manager/5-1-x/Cloudera-Manager-Installation-Guide/cm5ig_install_path_B.html" target="_blank" rel="noopener">Cloudera-Manager-Installation-Guide</a></li>
+</ul>
+</div><div class="tags"></div><div class="post-nav"><a class="pre" href="/2016/10/02/IO-OutputStream/">OutputStream</a><a class="next" href="/2016/09/24/虚拟机连接win7回环网卡/">虚拟机连接win7回环网卡</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form class="search-form" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank"><input type="text" name="q" maxlength="20" placeholder="Search"><input type="hidden" name="sitesearch" value="http://yoursite.com"></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/interface/" style="font-size: 15px;">interface</a> <a href="/tags/zookeeper/" style="font-size: 15px;">zookeeper</a> <a href="/tags/Collections/" style="font-size: 15px;">Collections</a> <a href="/tags/Collection/" style="font-size: 15px;">Collection</a> <a href="/tags/J-U-C/" style="font-size: 15px;">J.U.C</a> <a href="/tags/lock/" style="font-size: 15px;">lock</a> <a href="/tags/Semaphore/" style="font-size: 15px;">Semaphore</a> <a href="/tags/CyclicBarrier/" style="font-size: 15px;">CyclicBarrier</a> <a href="/tags/CountDownLatch/" style="font-size: 15px;">CountDownLatch</a> <a href="/tags/JVM/" style="font-size: 15px;">JVM</a> <a href="/tags/LinkedList/" style="font-size: 15px;">LinkedList</a> <a href="/tags/Queue/" style="font-size: 15px;">Queue</a> <a href="/tags/Set/" style="font-size: 15px;">Set</a> <a href="/tags/java/" style="font-size: 15px;">java</a> <a href="/tags/collection/" style="font-size: 15px;">collection</a> <a href="/tags/kafka/" style="font-size: 15px;">kafka</a> <a href="/tags/api/" style="font-size: 15px;">api</a> <a href="/tags/mysql/" style="font-size: 15px;">mysql</a> <a href="/tags/spring/" style="font-size: 15px;">spring</a> <a href="/tags/mvc/" style="font-size: 15px;">mvc</a> <a href="/tags/context/" style="font-size: 15px;">context</a> <a href="/tags/component-scan/" style="font-size: 15px;">component-scan</a> <a href="/tags/storm/" style="font-size: 15px;">storm</a> <a href="/tags/windows/" style="font-size: 15px;">windows</a> <a href="/tags/命令行/" style="font-size: 15px;">命令行</a> <a href="/tags/cmder/" style="font-size: 15px;">cmder</a> <a href="/tags/win/" style="font-size: 15px;">win</a> <a href="/tags/效率/" style="font-size: 15px;">效率</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/nodejs/" style="font-size: 15px;">nodejs</a> <a href="/tags/博客/" style="font-size: 15px;">博客</a> <a href="/tags/apache/" style="font-size: 15px;">apache</a> <a href="/tags/extends/" style="font-size: 15px;">extends</a> <a href="/tags/git/" style="font-size: 15px;">git</a> <a href="/tags/svn/" style="font-size: 15px;">svn</a> <a href="/tags/BlockingQueue/" style="font-size: 15px;">BlockingQueue</a> <a href="/tags/LinkedBlockingQueue/" style="font-size: 15px;">LinkedBlockingQueue</a> <a href="/tags/PriorityBlockingQueue/" style="font-size: 15px;">PriorityBlockingQueue</a> <a href="/tags/ConcurrentLinkedQueue/" style="font-size: 15px;">ConcurrentLinkedQueue</a> <a href="/tags/CopyOnWriteArrayList/" style="font-size: 15px;">CopyOnWriteArrayList</a> <a href="/tags/接口/" style="font-size: 15px;">接口</a> <a href="/tags/抽象类/" style="font-size: 15px;">抽象类</a> <a href="/tags/Executor/" style="font-size: 15px;">Executor</a> <a href="/tags/ExecutorService/" style="font-size: 15px;">ExecutorService</a> <a href="/tags/CompletionService/" style="font-size: 15px;">CompletionService</a> <a href="/tags/ThreadPoolExecutor/" style="font-size: 15px;">ThreadPoolExecutor</a> <a href="/tags/vim/" style="font-size: 15px;">vim</a> <a href="/tags/vundle/" style="font-size: 15px;">vundle</a> <a href="/tags/ArrayList/" style="font-size: 15px;">ArrayList</a> <a href="/tags/log/" style="font-size: 15px;">log</a> <a href="/tags/index/" style="font-size: 15px;">index</a> <a href="/tags/concepts/" style="font-size: 15px;">concepts</a> <a href="/tags/Timer/" style="font-size: 15px;">Timer</a> <a href="/tags/TimerTask/" style="font-size: 15px;">TimerTask</a> <a href="/tags/ConcurrentMap/" style="font-size: 15px;">ConcurrentMap</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 15px;">ConcurrentHashMap</a> <a href="/tags/HashMap/" style="font-size: 15px;">HashMap</a> <a href="/tags/ReentrantReadWriteLock/" style="font-size: 15px;">ReentrantReadWriteLock</a> <a href="/tags/hadoop/" style="font-size: 15px;">hadoop</a> <a href="/tags/SynchronousQueue/" style="font-size: 15px;">SynchronousQueue</a> <a href="/tags/ScheduledExecutorService/" style="font-size: 15px;">ScheduledExecutorService</a> <a href="/tags/AQS/" style="font-size: 15px;">AQS</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/BigData-docker/">Windows 上安装 docker</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-0.路线/">Mysql学习路线</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/mysql-索引/">Mysql安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/Qunar基础框架-QSchedule/">Qunar基础框架-QSchedule</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/21/java集合构架中使用到的数据结构和算法/">java集合构架中使用到的数据结构和算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/04/20/reids-调试环境搭建/">redis-调试环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/31/OpenStack-安装/">OpenStack-安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/05/26/JVM-hotspot-GC机制/">JVM-hotspot-GC机制</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/04/11/netty-socketio + socket.io 实现消息推送/">netty-socketio + socket.io 实现消息推送</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/26/mongodb-安装/">mongodb-安装</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="https://github.com/a-ray-of-sunshine" title="github" target="_blank">github</a><ul></ul><a href="http://www.cnblogs.com/a-ray-of-sunshine" title="cnblog" target="_blank">cnblog</a><ul></ul><a href="http://blog.csdn.net/a_ray_of_sunshine" title="csdn" target="_blank">csdn</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2019 <a href="/." rel="nofollow">Shawshank.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
