@@ -57,5 +57,10 @@ explain 的使用。
 
 MySQL 表文件格式。
 
+### docker
+
+```
+docker run --name mysql -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:5.7
+```
 
 [MySQL Internals Manual](https://dev.mysql.com/doc/internals/en/)
